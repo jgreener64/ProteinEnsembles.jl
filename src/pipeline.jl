@@ -159,7 +159,7 @@ end
 
 "Run the analysis pipeline and write output files."
 function runanalysis{T <: AbstractString}(
-                    out_dir::AbstractString=defaults["out_dir"],
+                    out_dir::AbstractString,
                     ensemble::ModelledEnsemble,
                     bounds::Bounds;
                     extra_pdbs::Array{T,1}=ASCIIString[],
@@ -227,7 +227,7 @@ end
 
 
 function runanalysis{T <: AbstractString}(
-                    out_dir::AbstractString=defaults["out_dir"],
+                    out_dir::AbstractString,
                     ensemble_com::ModelledEnsemble,
                     bounds_one::Bounds,
                     bounds_two::Bounds;
