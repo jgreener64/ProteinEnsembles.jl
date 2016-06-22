@@ -4,3 +4,5 @@ ArgParse
 ProgressMeter
 Gadfly
 Colors
+Cairo
+Fontconfig

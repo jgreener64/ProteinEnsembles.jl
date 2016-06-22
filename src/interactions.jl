@@ -36,7 +36,6 @@ function distances(atoms::Array{Atom,1})
             dists[j,i] = dist
         end
     end
-    println("Found distances")
     return dists
 end
 
@@ -84,7 +83,6 @@ function bonds(atoms::Array{Atom,1}, bonded_pairs::Array{BondedPair,1})
             end
         end
     end
-    println("Found ", n_bonds, " covalent bond(s)")
     return bs
 end
 
@@ -117,7 +115,6 @@ function angles(atoms::Array{Atom,1}, bonds::BitArray)
             end
         end
     end
-    println("Found ", n_angles, " 1-3 pair(s)")
     return angles
 end
 
@@ -151,7 +148,6 @@ function divalents(atoms::Array{Atom,1}, bonds::BitArray, angles::BitArray)
             end
         end
     end
-    println("Found ", n_divalents, " 1-4 pair(s)")
     return divalents
 end
 

@@ -241,6 +241,6 @@ function trimbyscore!(ensemble::ModelledEnsemble, n_to_keep::Integer)
     scores = [struc.score for struc in strucs]
     inds_to_keep = sortperm(scores)[1:n_to_keep]
     ensemble.strucs = getindex(strucs, inds_to_keep)
-    println("Kept best scoring ", n_to_keep, " out of ", length(scores), " structures")
+    println("Kept lowest scoring ", n_to_keep, " out of ", length(scores), " structures")
     println("Scores range from ", round(sort(scores)[1], 1), " to ", round(sort(scores)[n_to_keep], 1))
 end

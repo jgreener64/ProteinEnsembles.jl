@@ -4,14 +4,14 @@
 
 **This is under development - do not trust anything here yet**
 
-This Julia package implements the EXProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites.
+This Julia package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites.
 
 The method is described in:
 
 JG Greener, I Filippis and MJE Sternberg, *Manuscript in preparation*
 
 
-# Summary
+## Summary
 
 Install using `Pkg.clone(https://github.com/jgreener64/ProteinEnsembles.jl.git)` from within Julia v0.4. Run using
 
@@ -20,7 +20,7 @@ julia ~/.julia/v0.4/ProteinEnsembles/run.jl --i1 input_1.pdb --d1 input_1.dssp -
 ```
 
 
-# Installation
+## Installation
 
 Julia v0.4 is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running
 
@@ -31,14 +31,14 @@ Pkg.clone(https://github.com/jgreener64/ProteinEnsembles.jl.git)
 from the Julia REPL. If you want you can run the tests using `Pkg.test("ProteinEnsembles")`.
 
 
-# Requirements
+## Requirements
 
 To use ProteinEnsembles.jl you will need the following:
 - PDB files of the protein of interest. Two is best, but one may be used. They must have polar hydrogens only added; this can be done using utilities such as [pdbtools](https://github.com/harmslab/pdbtools). The chain labelling and residue numbering must be consistent as this is used to find common atoms. Alternative atom locations are discarded. PDB files must also be a single model and not have any inserted residues. HETATM records are discarded by default.
 - DSSP files corresponding to the PDB files above. These can be obtained using [dssp](http://swift.cmbi.ru.nl/gv/dssp).
 
 
-# Usage
+## Usage
 
 Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The script `run.jl` in the package directory implements this. For example, to see the command line options, run
 
@@ -105,11 +105,13 @@ The output directory contains the following:
 ProteinEnsembles.jl also contains some functions for protein structure analysis that may be useful, e.g. structural alignment, PCA. The plan in time is to move the useful parts into the `Bio.Structure` module of BioJulia. For now, here are a few examples:
 
 ```julia
+# Align one protein to another and write a PDB file with the new coordinates
+
 
 ```
 
 
-# Reproducing paper results
+## Reproducing paper results
 
 The results from the paper can be generated...
 Dataset...
