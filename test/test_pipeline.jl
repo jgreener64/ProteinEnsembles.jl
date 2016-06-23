@@ -66,4 +66,6 @@ test_pocket_points = testfile("1AKE_pocket_points.pdb")
     )
     @test length(readdir("$temp_dir/pdbs_mod_1")) == 4
     rm(temp_dir, recursive=true)
+
+    @test_throws AssertionError runpipeline(i2=test_i2, d2=test_d2)
 end
