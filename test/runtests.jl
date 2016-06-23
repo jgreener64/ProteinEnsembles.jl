@@ -3,8 +3,6 @@ using BaseTestNext
 
 const Test = BaseTestNext
 
-println("These tests usually take about 5 minutes to run")
-
 testfile(path::AbstractString...) = Pkg.dir("ProteinEnsembles", "test", "test_files", path...)
 
 include("test_types.jl")
