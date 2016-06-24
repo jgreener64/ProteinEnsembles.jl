@@ -681,8 +681,10 @@ end
 
 
 """
-Run the interaction finding pipeline with one structure.
-Returns a Bound object.
+Run the interaction finding pipeline with one or two structures.
+If one structure is given, returns a Bound object.
+If two structures are given, returns three Bound objects corresponding to the
+combined bounds, bounds from structure one and bounds from structure two.
 """
 function interactions(pdb_filepath::AbstractString,
                     dssp_filepath::AbstractString;
@@ -699,11 +701,6 @@ function interactions(pdb_filepath::AbstractString,
 end
 
 
-"""
-Run the interaction finding pipeline with two structures.
-Returns three Bound objects corresponding to the combined bounds, bounds from structure
-one and bounds from structure two.
-"""
 function interactions(pdb_filepath_one::AbstractString,
                     dssp_filepath_one::AbstractString,
                     pdb_filepath_two::AbstractString,

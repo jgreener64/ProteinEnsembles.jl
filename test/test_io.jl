@@ -1,25 +1,33 @@
 # Tests for io.jl
 
 
-test_pdb_filepath = testfile("1AKE.pdb")
-test_dssp_filepath = testfile("4AKE.dssp")
+test_pdb_filepath_1 = testfile("1AKE.pdb")
+test_dssp_filepath_1 = testfile("4AKE.dssp")
+test_pdb_filepath_2 = testfile("1CTR_H.pdb")
+test_dssp_filepath_2 = testfile("1CTR.dssp")
 test_pocket_points = testfile("1AKE_pocket_points.pdb")
 
 
 @testset "IO" begin
-    dssps = readdssp(test_dssp_filepath)
+    dssps = readdssp(test_dssp_filepath_1)
     @test dssps["21A"] == 'H'
     @test dssps["43A"] == ' '
 
 
-    atoms = readpdb(test_pdb_filepath)
+    atoms = readpdb(test_pdb_filepath_2)
+    dssps = readdssp(test_dssp_filepath_2, atoms)
+    @test length(dssps) == 142
+    @test dssps["75A"] == '-'
+
+
+    atoms = readpdb(test_pdb_filepath_1)
     @test isa(atoms, Array{Atom,1})
     @test length(atoms) == 3312
     atom = atoms[10]
     @test atom.atom_name == "CA"
     @test atom.res_n == 2
     @test atom.coords[2] == 49.969
-    atoms = readpdb(test_pdb_filepath, hetatm=true)
+    atoms = readpdb(test_pdb_filepath_1, hetatm=true)
     @test length(atoms) == 3804
 
 
@@ -35,7 +43,7 @@ test_pocket_points = testfile("1AKE_pocket_points.pdb")
     @test spaceatomname("CABA", "C") == "CABA"
 
 
-    atoms = readpdb(test_pdb_filepath)
+    atoms = readpdb(test_pdb_filepath_1)
     # Temp file which is removed at the end
     temp_filepath = tempname()
     writepdb(temp_filepath, atoms)

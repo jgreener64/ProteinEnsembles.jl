@@ -9,7 +9,6 @@ export
     findcommonatoms,
     atommap,
     atomid,
-    readdssp,
     calphaindices,
     atomcoords,
     atomcoords!,
@@ -132,24 +131,6 @@ end
 atomid(atom::Atom) = "$(atom.atom_name)/$(atom.res_name)/$(atom.res_n)/$(atom.chain_id)"
 
 
-"""
-Reads a DSSP file, then creates additional '-' entries for residues not present in the DSSP file.
-Returns a dictionary where key is residue number and chain, and value is secondary structure.
-"""
-function readdssp(dssp_filepath::AbstractString, atoms::Array{Atom,1})
-    dssps = readdssp(dssp_filepath)
-    res_pres = collect(keys(dssps))
-    for atom in atoms
-        res = "$(atom.res_n)$(atom.chain_id)"
-        if !(res in res_pres)
-            dssps[res] = '-'
-            push!(res_pres, res)
-        end
-    end
-    return dssps
-end
-
-
 "Return as an array the indices in an array of atoms that correspond to C-alpha atoms."
 function calphaindices(atoms::Array{Atom,1})
     ca_inds = Int[]
@@ -162,7 +143,7 @@ function calphaindices(atoms::Array{Atom,1})
 end
 
 
-"Return the list of coordinates from a list of atoms."
+"Get or set the list of coordinates for a list of atoms."
 function atomcoords(atoms::Array{Atom,1})
     coords = zeros(3, length(atoms))
     for (i, atom) in enumerate(atoms)
@@ -172,10 +153,6 @@ function atomcoords(atoms::Array{Atom,1})
 end
 
 
-"""
-Set the coordinates of a list of atoms from a list of coordinates.
-Returns a new atoms list with updated coordinates.
-"""
 function atomcoords(atoms::Array{Atom,1}, coords::Array{Float64})
     new_atoms = deepcopy(atoms)
     atomcoords!(new_atoms, coords)

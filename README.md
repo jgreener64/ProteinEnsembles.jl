@@ -6,9 +6,7 @@
 
 **This is under development - do not trust anything here yet**
 
-This Julia package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites.
-
-The method is described in:
+This Julia package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites. The method is described in:
 
 JG Greener, I Filippis and MJE Sternberg, *Manuscript in preparation*
 
@@ -30,7 +28,7 @@ Julia v0.4 is required and can be downloaded [here](http://julialang.org/downloa
 Pkg.clone(https://github.com/jgreener64/ProteinEnsembles.jl.git)
 ```
 
-from the Julia REPL. If you want you can run the tests using `Pkg.test("ProteinEnsembles")`.
+from the Julia REPL. This will also automatically install a few other required Julia packages. If you want you can run the tests using `Pkg.test("ProteinEnsembles")`.
 
 
 ## Requirements

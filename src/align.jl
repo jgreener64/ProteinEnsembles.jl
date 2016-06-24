@@ -53,7 +53,7 @@ end
 """
 Align the first set of atomic coordinates to the second using an iterative procedure.
 At each step atoms with a high structural deviation are removed.
-If the standard deviation of the structural deviations is greater than cutoff, then structural
+If the standard deviation of the structural deviations is greater than `cutoff`, then structural
 deviations further than 2 standard deviations from the median are discarded.
 This is repeated `n_cycles` times.
 If `calpha` is true, only considers the C-alpha atoms.
@@ -138,7 +138,7 @@ end
 
 
 """
-Align an array of atoms to a set of coordinates.
+Align an array of atoms to a set of coordinates or another set of atoms.
 Input is list of atoms and coords to align to.
 Changes the atom coords.
 """
@@ -152,10 +152,6 @@ function alignatoms!(atoms::Array{Atom,1}, coords_ref::Array{Float64})
 end
 
 
-"""
-Align one array of atoms to another.
-The coordinates of the first atom array are changed.
-"""
 alignatoms!(atoms::Array{Atom,1}, atoms_ref::Array{Atom,1}) = alignatoms!(atoms, atomcoords(atoms_ref))
 
 
@@ -207,7 +203,7 @@ end
 
 
 """
-Get the RMSD between two identical structures.
+Get the RMSD between two identical structures or two sets of coordinates.
 Assumes the structures are aligned.
 If `calpha` is true, only considers the C-alpha atoms.
 """
@@ -228,11 +224,6 @@ function rmsd(coords_one::Array{Float64},
     return rmsd(getindex(coords_one, collect(1:3), inds_to_use), getindex(coords_two, collect(1:3), inds_to_use))
 end
 
-
-"""
-Get the RMSD between two sets of coordinates.
-Assumes the structures are aligned.
-"""
 function rmsd(coords_one::Array{Float64}, coords_two::Array{Float64})
     n_coords = size(coords_one, 2)
     @assert n_coords == size(coords_two, 2) "Number of coordinates is different"

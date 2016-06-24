@@ -1,10 +1,6 @@
 # Tests for atoms.jl
 
 
-test_pdb_filepath = testfile("1CTR_H.pdb")
-test_dssp_filepath = testfile("1CTR.dssp")
-
-
 @testset "Atoms" begin
     @test inferelement("CA") == "C"
     @test inferelement("NC") == "C"
@@ -50,12 +46,6 @@ test_dssp_filepath = testfile("1CTR.dssp")
 
 
     @test atomid(Atom("CA", "ALA", 'A', 20, [0.0, 0.0, 0.0], "C")) == "CA/ALA/20/A"
-
-
-    atoms = readpdb(test_pdb_filepath)
-    dssps = readdssp(test_dssp_filepath, atoms)
-    @test length(dssps) == 142
-    @test dssps["75A"] == '-'
 
 
     atom_one = Atom("C", "ALA", 'A', 20, [0.0, 0.0, 0.0], "C")

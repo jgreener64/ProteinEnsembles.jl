@@ -27,9 +27,22 @@ end
 
 
 """
-Reads a DSSP file.
+Reads a DSSP file. If atoms are provided, creates additional '-' entries for residues not present in the DSSP file.
 Returns a dictionary where key is residue number and chain, and value is secondary structure.
 """
+function readdssp(dssp_filepath::AbstractString, atoms::Array{Atom,1})
+    dssps = readdssp(dssp_filepath)
+    res_pres = collect(keys(dssps))
+    for atom in atoms
+        res = "$(atom.res_n)$(atom.chain_id)"
+        if !(res in res_pres)
+            dssps[res] = '-'
+            push!(res_pres, res)
+        end
+    end
+    return dssps
+end
+
 function readdssp(dssp_filepath::AbstractString)
     @assert isfile(dssp_filepath) "Not a valid filepath: \"$dssp_filepath\""
     dssps = Dict{ASCIIString, Char}()
