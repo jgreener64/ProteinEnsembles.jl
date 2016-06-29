@@ -17,8 +17,8 @@ const defaults = Dict{ASCIIString, Any}(
     "align_cutoff"       => 0.5,
     "mod_points"         => 120,
     "mod_intra_cutoff"   => 0.0,
-    "mod_intra_freedom"  => 0.1,
+    "mod_intra_tolerance"  => 0.1,
     "mod_inter_cutoff"   => 7.0,
-    "mod_inter_freedom"  => 0.1,
+    "mod_inter_tolerance"  => 0.1,
     "mod_min_bound_dist" => 0.001,
 )

@@ -9,7 +9,7 @@ export
 """
 Find new interactions arising from fake modulator atoms and form a new Bounds object.
 Arguments are atoms to calculate bounds with, `Bounds` object to add to, generated modulator
-coordinates, distance cutoff and bound freedoms for intra-modulator and modulator-protein
+coordinates, distance cutoff and bound tolerances for intra-modulator and modulator-protein
 interactions, and minimum lower distance bound.
 Returns a new `Bounds` object including the modulator.
 """
@@ -17,9 +17,9 @@ function Bounds(atoms::Array{Atom,1},
                     old_bounds::Bounds,
                     mod_coords::Array{Float64};
                     intra_cutoff::Real=defaults["mod_intra_cutoff"],
-                    intra_freedom::Real=defaults["mod_intra_freedom"],
+                    intra_tolerance::Real=defaults["mod_intra_tolerance"],
                     inter_cutoff::Real=defaults["mod_inter_cutoff"],
-                    inter_freedom::Real=defaults["mod_inter_freedom"],
+                    inter_tolerance::Real=defaults["mod_inter_tolerance"],
                     min_bound_dist::Real=defaults["mod_min_bound_dist"])
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
@@ -30,9 +30,9 @@ function Bounds(atoms::Array{Atom,1},
     n_mod_atoms = size(mod_coords, 2)
     @assert n_mod_atoms > 0 "No modulator coordinates in list"
     @assert intra_cutoff >= 0 "intra_cutoff cannot be negative"
-    @assert intra_freedom >= 0 "intra_freedom cannot be negative"
+    @assert intra_tolerance >= 0 "intra_tolerance cannot be negative"
     @assert inter_cutoff >= 0 "inter_cutoff cannot be negative"
-    @assert inter_freedom >= 0 "inter_freedom cannot be negative"
+    @assert inter_tolerance >= 0 "inter_tolerance cannot be negative"
     @assert min_bound_dist >= 0 "min_bound_dist cannot be negative"
     n_total = n_atoms + n_mod_atoms
     # Copy Bounds object and form larger bounds lists
@@ -57,8 +57,8 @@ function Bounds(atoms::Array{Atom,1},
             end
             if sq_dist < intra_cutoff_sq
                 dist = sqrt(sq_dist)
-                push!(new_lower, max(dist-intra_freedom, min_bound_dist))
-                push!(new_upper, dist+intra_freedom)
+                push!(new_lower, max(dist-intra_tolerance, min_bound_dist))
+                push!(new_upper, dist+intra_tolerance)
                 push!(new_inds_i, n_atoms+i)
                 push!(new_inds_j, n_atoms+j)
                 intra_counter += 1
@@ -76,8 +76,8 @@ function Bounds(atoms::Array{Atom,1},
             end
             if sq_dist < inter_cutoff_sq
                 dist = sqrt(sq_dist)
-                push!(new_lower, max(dist-inter_freedom, min_bound_dist))
-                push!(new_upper, dist+inter_freedom)
+                push!(new_lower, max(dist-inter_tolerance, min_bound_dist))
+                push!(new_upper, dist+inter_tolerance)
                 push!(new_inds_i, n_atoms+i)
                 push!(new_inds_j, j)
                 inter_counter += 1

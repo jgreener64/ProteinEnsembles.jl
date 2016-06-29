@@ -266,14 +266,14 @@ test_dssp_filepath = testfile("4AKE.dssp")
     ]
     bounds = Bounds(atoms, dists, inters, other_ratio=0.0, bound_weight=1.0)
     @test bounds.pres_inds == [2 1; 3 1]
-    inter_types, freedoms = interactioninfo(1.0)
+    inter_types, tolerances = interactioninfo(1.0)
     lower_real = [
-        dists[2, 1] - freedoms[1],
-        dists[3, 1] - freedoms[12],
+        dists[2, 1] - tolerances[1],
+        dists[3, 1] - tolerances[12],
     ]
     upper_real = [
-        dists[2, 1] + freedoms[1],
-        dists[3, 1] + freedoms[12],
+        dists[2, 1] + tolerances[1],
+        dists[3, 1] + tolerances[12],
     ]
     @test isapprox(bounds.lower, lower_real)
     @test isapprox(bounds.upper, upper_real)
@@ -301,14 +301,14 @@ test_dssp_filepath = testfile("4AKE.dssp")
     ]
     bounds = Bounds(atoms_a, dists_a, dists_b, inters_a, inters_b, other_ratio=0.0, bound_weight=1.0)
     @test bounds.pres_inds == [2 1; 3 1]
-    inter_types, freedoms = interactioninfo(1.0)
+    inter_types, tolerances = interactioninfo(1.0)
     lower_real = [
-        min(dists_a[2, 1] - freedoms[1], dists_b[2, 1] - freedoms[1]),
-        min(dists_a[3, 1] - freedoms[12], dists_b[3, 1] - freedoms[10]),
+        min(dists_a[2, 1] - tolerances[1], dists_b[2, 1] - tolerances[1]),
+        min(dists_a[3, 1] - tolerances[12], dists_b[3, 1] - tolerances[10]),
     ]
     upper_real = [
-        max(dists_a[2, 1] + freedoms[1], dists_b[2, 1] + freedoms[1]),
-        max(dists_a[3, 1] + freedoms[12], dists_b[3, 1] + freedoms[10]),
+        max(dists_a[2, 1] + tolerances[1], dists_b[2, 1] + tolerances[1]),
+        max(dists_a[3, 1] + tolerances[12], dists_b[3, 1] + tolerances[10]),
     ]
     @test isapprox(bounds.lower, lower_real)
     @test isapprox(bounds.upper, upper_real)

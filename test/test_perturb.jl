@@ -19,7 +19,7 @@
         0.0 0.0;
     ]
     new_bounds = Bounds(atoms, bounds, mod_coords, intra_cutoff=1000.0,
-        intra_freedom=0.1, inter_cutoff=1.0, inter_freedom=0.1)
+        intra_tolerance=0.1, inter_cutoff=1.0, inter_tolerance=0.1)
     @test length(new_bounds.atoms) == 5
     @test new_bounds.atoms[4].res_name == mod_atom_info["res_name"]
     real_lower = [

@@ -37,7 +37,7 @@ function parsecommandline()
             arg_type = Int
             default = defaults["n_strucs"]
         "--bound_weight", "-w"
-            help = "weighting of bound freedoms for interactions"
+            help = "weighting of bound tolerances for interactions"
             arg_type = Float64
             default = defaults["bound_weight"]
         "--other_ratio", "-r"
@@ -291,7 +291,7 @@ function runanalysis{T <: AbstractString}(
     # Write PyMol scripts to view PCs
     writepcviews("$out_dir/pymol/pc_", pca, ensemble_com.atoms, 5)
 
-    # Write input atoms back out
+    # Write input atoms back out
     writepdb("$out_dir/input_1.pdb", bounds_one.atoms)
     writepdb("$out_dir/input_2.pdb", bounds_two.atoms)
 

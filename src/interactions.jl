@@ -441,46 +441,46 @@ end
 
 
 """
-Returns a list with interaction types and a list with corresponding distance freedoms.
+Returns a list with interaction types and a list with corresponding distance tolerances.
 Zero index represents same atom.
-`bound_weight` weights all freedoms.
+`bound_weight` weights all tolerances.
 """
 function interactioninfo(bound_weight::Real=defaults["bound_weight"])
     n_inter_types = 15
     inter_types = repeat([""], inner=[n_inter_types])
-    freedoms = zeros(n_inter_types)
+    tolerances = zeros(n_inter_types)
     inter_types[1] = "Covalently bonded"
-    freedoms[1] = 0.02
+    tolerances[1] = 0.02
     inter_types[2] = "1-3 system"
-    freedoms[2] = 0.05
+    tolerances[2] = 0.05
     inter_types[3] = "Same ring system"
-    freedoms[3] = 0.1
+    tolerances[3] = 0.1
     inter_types[4] = "Side-chain restricted 1-4"
-    freedoms[4] = 0.1
+    tolerances[4] = 0.1
     inter_types[5] = "Omega 1-4"
-    freedoms[5] = 0.1
+    tolerances[5] = 0.1
     inter_types[6] = "Tight phi/psi 1-4"
-    freedoms[6] = 0.2
+    tolerances[6] = 0.2
     inter_types[7] = "Loose phi/psi 1-4"
-    freedoms[7] = 0.4
+    tolerances[7] = 0.4
     inter_types[8] = "Other phi/psi 1-4"
-    freedoms[8] = 0.3
+    tolerances[8] = 0.3
     inter_types[9] = "Other 1-4"
-    freedoms[9] = 0.4
+    tolerances[9] = 0.4
     inter_types[10] = "Secondary structure"
-    freedoms[10] = 0.5
+    tolerances[10] = 0.5
     inter_types[11] = "Salt bridge"
-    freedoms[11] = 0.75
+    tolerances[11] = 0.75
     inter_types[12] = "H bond"
-    freedoms[12] = 0.5
+    tolerances[12] = 0.5
     inter_types[13] = "Tight hydrophobic"
-    freedoms[13] = 0.5
+    tolerances[13] = 0.5
     inter_types[14] = "Loose hydrophobic"
-    freedoms[14] = 1.0
+    tolerances[14] = 1.0
     inter_types[15] = "Other pairs"
-    freedoms[15] = 5.0
-    freedoms *= bound_weight
-    return inter_types, freedoms
+    tolerances[15] = 5.0
+    tolerances *= bound_weight
+    return inter_types, tolerances
 end
 
 
@@ -503,7 +503,7 @@ function findinteractions(atoms::Array{Atom,1},
     @assert n_atoms == size(divalents, 1) "Number of atoms in atom list and divalent matrix are not the same"
     @assert length(dssps) > 0 "DSSP dictionary is empty"
     inters = zeros(Int, n_atoms, n_atoms)
-    inter_types, freedoms = interactioninfo()
+    inter_types, tolerances = interactioninfo()
     inter_counter = zeros(Int, length(inter_types))
     for i in 1:n_atoms
         for j in 1:i-1
@@ -576,7 +576,7 @@ function Bounds(atoms::Array{Atom,1},
     @assert 0.0 <= other_ratio "other_ratio must be positive or zero"
     bounds_lower = Float64[]
     bounds_upper = Float64[]
-    inter_types, freedoms = interactioninfo(bound_weight)
+    inter_types, tolerances = interactioninfo(bound_weight)
     present_i = Int[]
     present_j = Int[]
     # Calculate the probability of accepting other interactions based on the desired ratio of other interactions to n_atoms
@@ -585,11 +585,11 @@ function Bounds(atoms::Array{Atom,1},
         for j in 1:i-1
             # Calculate explicit interactions and other interactions with a probability other_prob
             if inters[i, j] != 15 || rand() < other_prob
-                bound_upper = dists[i,j] + freedoms[inters[i,j]]
+                bound_upper = dists[i,j] + tolerances[inters[i,j]]
                 # Factor of 0.8 used here
                 radius_weighting = 0.8
                 sum_radii = (hard_sphere_radius[atoms[i].element] + hard_sphere_radius[atoms[j].element]) * radius_weighting
-                bound_lower = max(dists[i,j] - freedoms[inters[i,j]], sum_radii)
+                bound_lower = max(dists[i,j] - tolerances[inters[i,j]], sum_radii)
                 if bound_lower > bound_upper
                     println(
                         "Erroneous bound:\t",
@@ -637,7 +637,7 @@ function Bounds(atoms::Array{Atom,1},
     @assert 0.0 <= other_ratio "other_ratio must be positive or zero"
     bounds_lower = Float64[]
     bounds_upper = Float64[]
-    inter_types, freedoms = interactioninfo(bound_weight)
+    inter_types, tolerances = interactioninfo(bound_weight)
     present_i = Int[]
     present_j = Int[]
     # Calculate the probability of accepting other interactions based on the desired ratio of other interactions to n_atoms
@@ -646,14 +646,14 @@ function Bounds(atoms::Array{Atom,1},
         for j in 1:i-1
             # Calculate explicit interactions and other interactions with a probability other_prob
             if (inters_one[i, j] != 15 && inters_two[i, j] != 15) || rand() < other_prob
-                bound_upper_one = dists_one[i,j] + freedoms[inters_one[i,j]]
-                bound_upper_two = dists_two[i,j] + freedoms[inters_two[i,j]]
+                bound_upper_one = dists_one[i,j] + tolerances[inters_one[i,j]]
+                bound_upper_two = dists_two[i,j] + tolerances[inters_two[i,j]]
                 bound_upper = max(bound_upper_one, bound_upper_two)
                 # Factor of 0.8 used here
                 radius_weighting = 0.8
                 sum_radii = (hard_sphere_radius[atoms[i].element] + hard_sphere_radius[atoms[j].element]) * radius_weighting
-                bound_lower_one = dists_one[i,j] - freedoms[inters_one[i,j]]
-                bound_lower_two = dists_two[i,j] - freedoms[inters_two[i,j]]
+                bound_lower_one = dists_one[i,j] - tolerances[inters_one[i,j]]
+                bound_lower_two = dists_two[i,j] - tolerances[inters_two[i,j]]
                 bound_lower = max(min(bound_lower_one, bound_lower_two), sum_radii)
                 if bound_lower > bound_upper
                     println(
