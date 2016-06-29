@@ -5,13 +5,13 @@
     lower = [1.0]
     upper = [2.0]
     pres_inds = [1 3]
-    bounds = Bounds(Atom[], lower, upper, pres_inds)
+    constraints = Constraints(Atom[], lower, upper, pres_inds)
     coords = [
         0.0 0.0 2.5;
         0.0 1.0 0.0;
         0.0 0.0 0.0;
     ]
-    @test errorscore(bounds, coords) == 0.25
+    @test errorscore(constraints, coords) == 0.25
 
 
     # Test L-amino acids are not inverted

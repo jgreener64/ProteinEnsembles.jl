@@ -4,7 +4,7 @@
 export
     BondedPair,
     Atom,
-    Bounds,
+    Constraints,
     ModelledStructure,
     ModelledEnsemble,
     PCA
@@ -42,16 +42,16 @@ function Base.show(io::IO, atom::Atom)
 end
 
 
-"Information about the lower and upper distance bounds between atoms."
-type Bounds
+"Information about the lower and upper distance constraints between atoms."
+type Constraints
     atoms::Array{Atom,1}
-    lower::Array{Float64,1} # List of lower bounds by present index
-    upper::Array{Float64,1} # List of upper bounds by present index
-    pres_inds::Array{Int,2} # List of index pairs of present bounds
+    lower::Array{Float64,1} # List of lower constraints by present index
+    upper::Array{Float64,1} # List of upper constraints by present index
+    pres_inds::Array{Int,2} # List of index pairs of present constraints
 end
 
-function Base.show(io::IO, bounds::Bounds)
-    println(io, length(bounds.lower), " lower and upper distance bounds for ", length(bounds.atoms), " atoms")
+function Base.show(io::IO, constraints::Constraints)
+    println(io, length(constraints.lower), " lower and upper distance constraints for ", length(constraints.atoms), " atoms")
 end
 
 

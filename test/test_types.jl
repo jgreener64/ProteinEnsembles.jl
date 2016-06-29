@@ -16,14 +16,14 @@
         Atom("CA", "LEU", 'A', 101, [1.0, 2.0, 3.0], "C"),
         Atom("CA", "VAL", 'A', 102, [1.0, 2.0, 3.0], "C")
     ]
-    bounds = Bounds(
+    constraints = Constraints(
         atoms,
         [1.0, 2.0],
         [1.5, 2.5],
         [1 2; 2 3]
     )
-    @test isa(bounds, Bounds)
-    show(DevNull, bounds)
+    @test isa(constraints, Constraints)
+    show(DevNull, constraints)
 
     struc = ModelledStructure(
         1.0, [

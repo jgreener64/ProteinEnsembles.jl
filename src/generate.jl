@@ -2,7 +2,7 @@
 
 
 export
-    fillbounds,
+    fillconstraints,
     errorscore,
     fixchirality!,
     addstructure!,
@@ -19,35 +19,37 @@ Use stochastic proximity embedding to generate a structure iteratively.
 See Agrafiotis et.al., Chapter 14 in Mucherino et. al., 2013 for algorithm details (Algorithm 8).
 Returns coordinate list.
 """
-function fillbounds(bounds::Bounds;
+function fillconstraints(constraints::Constraints;
                     iters_per_atom::Integer=defaults["iters_per_atom"],
                     cyc_step_ratio::Real=defaults["cyc_step_ratio"],
                     box_size::Real=defaults["box_size"]
     )
     @assert iters_per_atom > 0 "iters_per_atom must be positive"
     @assert cyc_step_ratio > 0 "cyc_step_ratio must be positive"
-    bounds_lower = bounds.lower
-    bounds_upper = bounds.upper
-    present_i = bounds.pres_inds[:,1]
-    present_j = bounds.pres_inds[:,2]
-    squares_lower = bounds_lower .* bounds_lower
-    squares_upper = bounds_upper .* bounds_upper
-    n_atoms = length(bounds.atoms)
-    # Work out no of cycles and steps using the no of atoms, the no of iterations per atom and the ratio of step no to cycle no
+    constraints_lower = constraints.lower
+    constraints_upper = constraints.upper
+    present_i = constraints.pres_inds[:,1]
+    present_j = constraints.pres_inds[:,2]
+    squares_lower = constraints_lower .* constraints_lower
+    squares_upper = constraints_upper .* constraints_upper
+    n_atoms = length(constraints.atoms)
+    # Work out n_cycles and n_steps using n_atoms, iters_per_atom and the ratio of steps to cycles
     n_cycs_steps = n_atoms * iters_per_atom
     n_cycles = round(Int, sqrt(n_cycs_steps / cyc_step_ratio))
     n_steps = round(Int, sqrt(n_cycs_steps * cyc_step_ratio))
+    # Randomise atomic coordinates in a cube
     coords = rand!(zeros(3, n_atoms)) * box_size
-    n_bounds = length(present_i)
+    n_constraints = length(present_i)
     learning_rate = 1.0
     coord_new_i = zeros(3)
     coord_new_j = zeros(3)
-    bound_near = 0.0
+    constraint_near = 0.0
     rand_list = zeros(Int, n_steps)
     @inbounds for cyc in 1:n_cycles
-        # Set up list of random index tuples
-        rand!(rand_list, 1:n_bounds)
+        # List of random index tuples
+        rand!(rand_list, 1:n_constraints)
         for rand_ind in rand_list
+            # Pick a random constraint
             i = present_i[rand_ind]
             j = present_j[rand_ind]
             # Compute distance between atoms
@@ -55,17 +57,17 @@ function fillbounds(bounds::Bounds;
             for m = 1:3
                 sq_dist += abs2(coords[m, i] - coords[m, j])
             end
-            # Check if distance is within bounds
+            # Check if distance is within constraints
             if sq_dist < squares_lower[rand_ind]
-                bound_near = bounds_lower[rand_ind]
+                constraint_near = constraints_lower[rand_ind]
             elseif sq_dist > squares_upper[rand_ind]
-                bound_near = bounds_upper[rand_ind]
+                constraint_near = constraints_upper[rand_ind]
             else
                 continue
             end
             # Adjust coordinates
             distance = sqrt(sq_dist)
-            prefactor = learning_rate * 0.5 * (bound_near - distance) / distance
+            prefactor = learning_rate * 0.5 * (constraint_near - distance) / distance
             for k in 1:3
                 coord_new_i[k] = newcoords(k, i, j, prefactor, coords)
                 coord_new_j[k] = newcoords(k, j, i, prefactor, coords)
@@ -82,24 +84,24 @@ function fillbounds(bounds::Bounds;
 end
 
 
-# Speeds up fillbounds
+# Speeds up fillconstraints
 newcoords(k::Integer, i::Integer, j::Integer, prefactor::Float64, coords::Array{Float64,2}) = coords[k, i] + prefactor * (coords[k, i] - coords[k, j])
 
 
 "Calculate SPE error score."
-function errorscore(bounds::Bounds, coords::Array{Float64})
-    bounds_lower = bounds.lower
-    bounds_upper = bounds.upper
-    pres_inds = bounds.pres_inds
+function errorscore(constraints::Constraints, coords::Array{Float64})
+    constraints_lower = constraints.lower
+    constraints_upper = constraints.upper
+    pres_inds = constraints.pres_inds
     score = 0.0
     for m in 1:size(pres_inds, 1)
         k, l = pres_inds[m,:]
         distance = norm(coords[:,k] - coords[:,l])
-        if distance < bounds_lower[m]
-            # Arbitrary minimum bound size used here to prevent division by zero and infinite scores
-            score += ((distance-bounds_lower[m])^2) / max((bounds_upper[m]-bounds_lower[m]), 0.001)
-        elseif distance > bounds_upper[m]
-            score += ((distance-bounds_upper[m])^2) / max((bounds_upper[m]-bounds_lower[m]), 0.001)
+        if distance < constraints_lower[m]
+            # Arbitrary minimum constraint size used here to prevent division by zero and infinite scores
+            score += ((distance-constraints_lower[m])^2) / max((constraints_upper[m]-constraints_lower[m]), 0.001)
+        elseif distance > constraints_upper[m]
+            score += ((distance-constraints_upper[m])^2) / max((constraints_upper[m]-constraints_lower[m]), 0.001)
         end
     end
     return score
@@ -202,25 +204,25 @@ discard_ratio gives the fraction of extra structures to calculate, then the low-
 If `remove_mod` is true then modulator atoms and coords are removed from the ensemble before it is returned.
 Returns a `ModelledEnsemble`.
 """
-function generateensemble(bounds::Bounds,
+function generateensemble(constraints::Constraints,
                     n_strucs::Integer;
                     iters_per_atom::Integer=defaults["iters_per_atom"],
                     discard_ratio::Real=defaults["discard_ratio"],
                     remove_mod::Bool=true)
-    atoms = bounds.atoms
+    atoms = constraints.atoms
     n_atoms = length(atoms)
-    @assert n_atoms > 0 "The Bounds object does not have the atoms set"
-    n_bounds = size(bounds.pres_inds, 1)
-    @assert n_bounds == length(bounds.lower) && n_bounds == length(bounds.upper) "The number of lower and upper bounds do not correspond to the number of bounds present"
-    @assert n_bounds > 0 "There are no bounds present"
+    @assert n_atoms > 0 "The Constraints object does not have the atoms set"
+    n_constraints = size(constraints.pres_inds, 1)
+    @assert n_constraints == length(constraints.lower) && n_constraints == length(constraints.upper) "The number of lower and upper constraints do not correspond to the number of constraints present"
+    @assert n_constraints > 0 "There are no constraints present"
     @assert discard_ratio >= 1.0 "discard_ratio must be >= 1"
     ensemble = ModelledEnsemble(atoms)
     n_strucs_init = round(Int, ceil(n_strucs * discard_ratio))
     println("Will generate ", n_strucs_init, " structures and keep best-scoring ", n_strucs)
     p = Progress(n_strucs_init, 1, "Progress: ", 50)
     for struc_n in 1:n_strucs_init
-        coords = fillbounds(bounds, iters_per_atom=iters_per_atom)
-        score = errorscore(bounds, coords)
+        coords = fillconstraints(constraints, iters_per_atom=iters_per_atom)
+        score = errorscore(constraints, coords)
         fixchirality!(coords, atoms)
         addstructure!(ensemble, ModelledStructure(score, coords))
         next!(p)

@@ -36,10 +36,10 @@ function parsecommandline()
             help = "number of structures to generate"
             arg_type = Int
             default = defaults["n_strucs"]
-        "--bound_weight", "-w"
-            help = "weighting of bound tolerances for interactions"
+        "--tolerance_weight", "-w"
+            help = "weighting of constraint tolerances for interactions"
             arg_type = Float64
-            default = defaults["bound_weight"]
+            default = defaults["tolerance_weight"]
         "--other_ratio", "-r"
             help = "ratio of non-specific interactions to atom number"
             arg_type = Float64
@@ -69,7 +69,7 @@ function runfromshell(parsed_args)
         d2=parsed_args["d2"],
         out_dir=parsed_args["out_dir"],
         n_strucs=parsed_args["n_strucs"],
-        bound_weight=parsed_args["bound_weight"],
+        tolerance_weight=parsed_args["tolerance_weight"],
         other_ratio=parsed_args["other_ratio"],
         extra_pdbs=parsed_args["extra_pdbs"],
         mod_path=parsed_args["mod_path"],
@@ -86,7 +86,7 @@ function runpipeline{T <: AbstractString}(;
                     d2::Union{AbstractString, Void}=nothing,
                     out_dir::AbstractString=defaults["out_dir"],
                     n_strucs::Integer=defaults["n_strucs"],
-                    bound_weight::Real=defaults["bound_weight"],
+                    tolerance_weight::Real=defaults["tolerance_weight"],
                     other_ratio::Real=defaults["other_ratio"],
                     extra_pdbs::Array{T,1}=ASCIIString[],
                     mod_path::Union{AbstractString, Void}=nothing,
@@ -98,21 +98,21 @@ function runpipeline{T <: AbstractString}(;
     println("-- ExProSE --")
     println()
     println("Arguments:")
-    println("  i1           - ", i1)
-    println("  d1           - ", d1)
-    println("  i2           - ", i2)
-    println("  d2           - ", d2)
-    println("  out_dir      - ", out_dir)
-    println("  n_strucs     - ", n_strucs)
-    println("  bound_weight - ", bound_weight)
-    println("  other_ratio  - ", other_ratio)
+    println("  i1               - ", i1)
+    println("  d1               - ", d1)
+    println("  i2               - ", i2)
+    println("  d2               - ", d2)
+    println("  out_dir          - ", out_dir)
+    println("  n_strucs         - ", n_strucs)
+    println("  tolerance_weight - ", tolerance_weight)
+    println("  other_ratio      - ", other_ratio)
     if length(extra_pdbs) > 0
-        println("  extra_pdbs   - ", join(extra_pdbs, ", "))
+        println("  extra_pdbs       - ", join(extra_pdbs, ", "))
     else
-        println("  extra_pdbs   - nothing")
+        println("  extra_pdbs       - nothing")
     end
-    println("  mod_path     - ", mod_path)
-    println("  n_mods       - ", n_mods)
+    println("  mod_path         - ", mod_path)
+    println("  n_mods           - ", n_mods)
     println()
 
     # Make output directories
@@ -121,20 +121,20 @@ function runpipeline{T <: AbstractString}(;
     append!(inner_dirs, ["mod_$i" for i in 1:n_mods])
     makedirectories(out_dir, inner_dirs)
 
-    # Decide whether to calculate the bounds from one or two structures
+    # Decide whether to calculate the constraints from one or two structures
     if i2 != nothing && d2 != nothing
         println("Proceeding with two structures")
-        bounds_com, bounds_one, bounds_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, bound_weight=bound_weight)
-        ensemble_com = generateensemble(bounds_com, n_strucs)
+        constraints_com, constraints_one, constraints_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
+        ensemble_com = generateensemble(constraints_com, n_strucs)
         # Perturbation carried out on holo structure
-        ensemble_mods = perturbensemble(bounds_two.atoms, bounds_com, n_strucs, mod_path, n_mods)
-        runanalysis(out_dir, ensemble_com, bounds_one, bounds_two, extra_pdbs=extra_pdbs, ensemble_mods=ensemble_mods)
+        ensemble_mods = perturbensemble(constraints_two.atoms, constraints_com, n_strucs, mod_path, n_mods)
+        runanalysis(out_dir, ensemble_com, constraints_one, constraints_two, extra_pdbs=extra_pdbs, ensemble_mods=ensemble_mods)
     else
         println("Proceeding with one structure")
-        bounds = interactions(i1, d1, other_ratio=other_ratio, bound_weight=bound_weight)
-        ensemble = generateensemble(bounds, n_strucs)
-        ensemble_mods = perturbensemble(bounds.atoms, bounds, n_strucs, mod_path, n_mods)
-        runanalysis(out_dir, ensemble, bounds, extra_pdbs=extra_pdbs, ensemble_mods=ensemble_mods)
+        constraints = interactions(i1, d1, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
+        ensemble = generateensemble(constraints, n_strucs)
+        ensemble_mods = perturbensemble(constraints.atoms, constraints, n_strucs, mod_path, n_mods)
+        runanalysis(out_dir, ensemble, constraints, extra_pdbs=extra_pdbs, ensemble_mods=ensemble_mods)
     end
     println("Done")
 end
@@ -161,18 +161,18 @@ end
 function runanalysis{T <: AbstractString}(
                     out_dir::AbstractString,
                     ensemble::ModelledEnsemble,
-                    bounds::Bounds;
+                    constraints::Constraints;
                     extra_pdbs::Array{T,1}=ASCIIString[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
                     out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
     ens_al = selfalignensemble!(ensemble)
-    alignatoms!(bounds.atoms, ens_al)
+    alignatoms!(constraints.atoms, ens_al)
     ens_av = centroid(ensemble)
 
     # Do PCA and write projections
     pca = PCA(ensemble)
-    pcs_ref = projectstructure(bounds.atoms, pca)
+    pcs_ref = projectstructure(constraints.atoms, pca)
     writeprojections("$out_dir/pcs/pcs.dat", pca.pcs)
     writeprojections("$out_dir/pcs/pcs_ref.dat", pcs_ref)
     writefloatarray("$out_dir/pcs/evals_spread.txt", pca.evals / sum(pca.evals))
@@ -180,11 +180,11 @@ function runanalysis{T <: AbstractString}(
     # Write PDBs, SPE scores and RMSDs
     writeensemble("$out_dir/pdbs/$out_prefix.pdb", ensemble)
     writeensemblescores("$out_dir/scores/scores.txt", ensemble)
-    writefloatarray("$out_dir/rmsds/rmsds.txt", ensemblermsds(ensemble, bounds.atoms))
+    writefloatarray("$out_dir/rmsds/rmsds.txt", ensemblermsds(ensemble, constraints.atoms))
 
     # Plot the PCs
     if length(extra_pdbs) > 0
-        pcs_extra = projectpdbfiles("$out_dir/pcs/pcs_ex_", extra_pdbs, bounds.atoms, ens_al, pca)
+        pcs_extra = projectpdbfiles("$out_dir/pcs/pcs_ex_", extra_pdbs, constraints.atoms, ens_al, pca)
     else
         pcs_extra = Float64[]
     end
@@ -199,13 +199,13 @@ function runanalysis{T <: AbstractString}(
     av_rmsds = Float64[]
     for (i, ensemble_mod) in enumerate(ensemble_mods)
         alignensemble!(ensemble_mod, ens_al)
-        push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), bounds.atoms))
+        push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), constraints.atoms))
         pcs_mod = projectensemble(ensemble_mod, pca)
         writeprojections("$out_dir/pcs/pcs_mod_$i.dat", pcs_mod)
         writeensemble("$out_dir/pdbs_mod_$i/$out_prefix.pdb", ensemble_mod)
         writeensemblescores("$out_dir/scores/scores_mod_$i.txt", ensemble_mod)
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
-        writefloatarray("$out_dir/mod_$i/rmsds.txt", ensemblermsds(ensemble_mod, bounds.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds.txt", ensemblermsds(ensemble_mod, constraints.atoms))
         selfalignensemble!(ensemble_mod)
         flucs_mod = fluctuations(ensemble_mod)
         writefloatarray("$out_dir/flucs/flucs_mod_$i.txt", flucs_mod)
@@ -217,7 +217,7 @@ function runanalysis{T <: AbstractString}(
     writepcviews("$out_dir/pymol/pc_", pca, ensemble.atoms, 5)
 
     # Write input atoms back out
-    writepdb("$out_dir/input.pdb", bounds.atoms)
+    writepdb("$out_dir/input.pdb", constraints.atoms)
 
     # Write perturbation values
     if length(ensemble_mods) > 0
@@ -229,21 +229,21 @@ end
 function runanalysis{T <: AbstractString}(
                     out_dir::AbstractString,
                     ensemble_com::ModelledEnsemble,
-                    bounds_one::Bounds,
-                    bounds_two::Bounds;
+                    constraints_one::Constraints,
+                    constraints_two::Constraints;
                     extra_pdbs::Array{T,1}=ASCIIString[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
                     out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
     ens_al = selfalignensemble!(ensemble_com)
-    alignatoms!(bounds_one.atoms, ens_al)
-    alignatoms!(bounds_two.atoms, ens_al)
+    alignatoms!(constraints_one.atoms, ens_al)
+    alignatoms!(constraints_two.atoms, ens_al)
     ens_av = centroid(ensemble_com)
 
     # Do PCA and write projections
     pca = PCA(ensemble_com)
-    pcs_ref_one = projectstructure(bounds_one.atoms, pca)
-    pcs_ref_two = projectstructure(bounds_two.atoms, pca)
+    pcs_ref_one = projectstructure(constraints_one.atoms, pca)
+    pcs_ref_two = projectstructure(constraints_two.atoms, pca)
     writeprojections("$out_dir/pcs/pcs_com.dat", pca.pcs)
     writeprojections("$out_dir/pcs/pcs_ref_one.dat", pcs_ref_one)
     writeprojections("$out_dir/pcs/pcs_ref_two.dat", pcs_ref_two)
@@ -253,12 +253,12 @@ function runanalysis{T <: AbstractString}(
     # Write PDBs, SPE scores and RMSDs
     writeensemble("$out_dir/pdbs/$out_prefix.pdb", ensemble_com)
     writeensemblescores("$out_dir/scores/scores.txt", ensemble_com)
-    writefloatarray("$out_dir/rmsds/rmsds_ref_one.txt", ensemblermsds(ensemble_com, bounds_one.atoms))
-    writefloatarray("$out_dir/rmsds/rmsds_ref_two.txt", ensemblermsds(ensemble_com, bounds_two.atoms))
+    writefloatarray("$out_dir/rmsds/rmsds_ref_one.txt", ensemblermsds(ensemble_com, constraints_one.atoms))
+    writefloatarray("$out_dir/rmsds/rmsds_ref_two.txt", ensemblermsds(ensemble_com, constraints_two.atoms))
 
     # Plot the PCs
     if length(extra_pdbs) > 0
-        pcs_extra = projectpdbfiles("$out_dir/pcs/pcs_ex_", extra_pdbs, bounds_one.atoms, ens_al, pca)
+        pcs_extra = projectpdbfiles("$out_dir/pcs/pcs_ex_", extra_pdbs, constraints_one.atoms, ens_al, pca)
     else
         pcs_extra = Float64[]
     end
@@ -273,14 +273,14 @@ function runanalysis{T <: AbstractString}(
     av_rmsds = Float64[]
     for (i, ensemble_mod) in enumerate(ensemble_mods)
         alignensemble!(ensemble_mod, ens_al)
-        push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), bounds_one.atoms))
+        push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), constraints_one.atoms))
         pcs_mod = projectensemble(ensemble_mod, pca)
         writeprojections("$out_dir/pcs/pcs_mod_$i.dat", pcs_mod)
         writeensemble("$out_dir/pdbs_mod_$i/$out_prefix.pdb", ensemble_mod)
         writeensemblescores("$out_dir/scores/scores_mod_$i.txt", ensemble_mod)
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref_one, pcs_ref_two=pcs_ref_two, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
-        writefloatarray("$out_dir/mod_$i/rmsds_ref_one.txt", ensemblermsds(ensemble_mod, bounds_one.atoms))
-        writefloatarray("$out_dir/mod_$i/rmsds_ref_two.txt", ensemblermsds(ensemble_mod, bounds_two.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_ref_one.txt", ensemblermsds(ensemble_mod, constraints_one.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_ref_two.txt", ensemblermsds(ensemble_mod, constraints_two.atoms))
         selfalignensemble!(ensemble_mod)
         flucs_mod = fluctuations(ensemble_mod)
         writefloatarray("$out_dir/flucs/flucs_mod_$i.txt", flucs_mod)
@@ -292,8 +292,8 @@ function runanalysis{T <: AbstractString}(
     writepcviews("$out_dir/pymol/pc_", pca, ensemble_com.atoms, 5)
 
     # Write input atoms back out
-    writepdb("$out_dir/input_1.pdb", bounds_one.atoms)
-    writepdb("$out_dir/input_2.pdb", bounds_two.atoms)
+    writepdb("$out_dir/input_1.pdb", constraints_one.atoms)
+    writepdb("$out_dir/input_2.pdb", constraints_two.atoms)
 
     # Write perturbation values
     if length(ensemble_mods) > 0

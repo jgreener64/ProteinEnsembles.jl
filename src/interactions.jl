@@ -443,9 +443,10 @@ end
 """
 Returns a list with interaction types and a list with corresponding distance tolerances.
 Zero index represents same atom.
-`bound_weight` weights all tolerances.
+`tolerance_weight` weights all tolerances.
 """
-function interactioninfo(bound_weight::Real=defaults["bound_weight"])
+function interactioninfo(tolerance_weight::Real=defaults["tolerance_weight"])
+    @assert tolerance_weight >= 0.0 "tolerance_weight cannot be negative"
     n_inter_types = 15
     inter_types = repeat([""], inner=[n_inter_types])
     tolerances = zeros(n_inter_types)
@@ -479,7 +480,7 @@ function interactioninfo(bound_weight::Real=defaults["bound_weight"])
     tolerances[14] = 1.0
     inter_types[15] = "Other pairs"
     tolerances[15] = 5.0
-    tolerances *= bound_weight
+    tolerances *= tolerance_weight
     return inter_types, tolerances
 end
 
@@ -557,26 +558,26 @@ end
 
 
 """
-Finds distance bounds from a set of interactions and distances.
-Returns a `Bounds` object.
+Finds distance constraints from a set of interactions and distances.
+Returns a `Constraints` object.
 All explicit interactions calculated - other interactions written with probability such that `other_ratio` times n_atoms other interactions are written.
 Sparse interactions scale as N but other interactions scale as N^2, hence the use of a ratio
 rather than a direct probability to keep the sparse/other ratio roughly constant.
-The hard sphere radii are multiplied by 0.8 to reduce the number of erroneous bounds.
+The hard sphere radii are multiplied by 0.8 to reduce the number of erroneous constraints.
 """
-function Bounds(atoms::Array{Atom,1},
+function Constraints(atoms::Array{Atom,1},
                     dists::Array{Float64},
                     inters::Array{Int};
                     other_ratio::Real=defaults["other_ratio"],
-                    bound_weight::Real=defaults["bound_weight"])
+                    tolerance_weight::Real=defaults["tolerance_weight"])
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
     @assert n_atoms == size(dists, 1) "Number of atoms in atom list and distance matrix are not the same"
     @assert n_atoms == size(inters, 1) "Number of atoms in atom list and interaction matrix are not the same"
     @assert 0.0 <= other_ratio "other_ratio must be positive or zero"
-    bounds_lower = Float64[]
-    bounds_upper = Float64[]
-    inter_types, tolerances = interactioninfo(bound_weight)
+    constraints_lower = Float64[]
+    constraints_upper = Float64[]
+    inter_types, tolerances = interactioninfo(tolerance_weight)
     present_i = Int[]
     present_j = Int[]
     # Calculate the probability of accepting other interactions based on the desired ratio of other interactions to n_atoms
@@ -585,49 +586,48 @@ function Bounds(atoms::Array{Atom,1},
         for j in 1:i-1
             # Calculate explicit interactions and other interactions with a probability other_prob
             if inters[i, j] != 15 || rand() < other_prob
-                bound_upper = dists[i,j] + tolerances[inters[i,j]]
+                constraint_upper = dists[i,j] + tolerances[inters[i,j]]
                 # Factor of 0.8 used here
                 radius_weighting = 0.8
                 sum_radii = (hard_sphere_radius[atoms[i].element] + hard_sphere_radius[atoms[j].element]) * radius_weighting
-                bound_lower = max(dists[i,j] - tolerances[inters[i,j]], sum_radii)
-                if bound_lower > bound_upper
+                constraint_lower = max(dists[i,j] - tolerances[inters[i,j]], sum_radii)
+                if constraint_lower > constraint_upper
                     println(
-                        "Erroneous bound:\t",
+                        "Erroneous constraint:\t",
                         atomid(atoms[i]),
                         "\t",
                         atomid(atoms[j]),
                         "\t",
-                        round(bound_lower, 3),
+                        round(constraint_lower, 3),
                         "\t",
-                        round(bound_upper, 3)
+                        round(constraint_upper, 3)
                     )
-                    bound_lower = bound_upper
+                    constraint_lower = constraint_upper
                 end
-                push!(bounds_lower, bound_lower)
-                push!(bounds_upper, bound_upper)
+                push!(constraints_lower, constraint_lower)
+                push!(constraints_upper, constraint_upper)
                 push!(present_i, i)
                 push!(present_j, j)
             end
         end
     end
-    println("Found distance bounds from single structure")
-    return Bounds(atoms, bounds_lower, bounds_upper, hcat(present_i, present_j))
+    println("Found distance constraints from single structure")
+    return Constraints(atoms, constraints_lower, constraints_upper, hcat(present_i, present_j))
 end
 
 
 """
-Finds distance bounds from two sets of interactions and distances.
-Returns a Bound object.
-Similar to Bounds except takes in two sets of interactions and combines them.
+Finds distance constraints from two sets of interactions and distances.
+Returns a `Constraints` object.
 Input atoms must correspond directly to each other.
 """
-function Bounds(atoms::Array{Atom,1},
+function Constraints(atoms::Array{Atom,1},
                     dists_one::Array{Float64},
                     dists_two::Array{Float64},
                     inters_one::Array{Int},
                     inters_two::Array{Int};
                     other_ratio::Real=defaults["other_ratio"],
-                    bound_weight::Real=defaults["bound_weight"])
+                    tolerance_weight::Real=defaults["tolerance_weight"])
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
     @assert n_atoms == size(dists_one, 1) "Number of atoms in atom list and distance matrix one are not the same"
@@ -635,9 +635,9 @@ function Bounds(atoms::Array{Atom,1},
     @assert n_atoms == size(inters_one, 1) "Number of atoms in atom list and interaction matrix one are not the same"
     @assert n_atoms == size(inters_two, 1) "Number of atoms in atom list and interaction matrix two are not the same"
     @assert 0.0 <= other_ratio "other_ratio must be positive or zero"
-    bounds_lower = Float64[]
-    bounds_upper = Float64[]
-    inter_types, tolerances = interactioninfo(bound_weight)
+    constraints_lower = Float64[]
+    constraints_upper = Float64[]
+    inter_types, tolerances = interactioninfo(tolerance_weight)
     present_i = Int[]
     present_j = Int[]
     # Calculate the probability of accepting other interactions based on the desired ratio of other interactions to n_atoms
@@ -646,50 +646,50 @@ function Bounds(atoms::Array{Atom,1},
         for j in 1:i-1
             # Calculate explicit interactions and other interactions with a probability other_prob
             if (inters_one[i, j] != 15 && inters_two[i, j] != 15) || rand() < other_prob
-                bound_upper_one = dists_one[i,j] + tolerances[inters_one[i,j]]
-                bound_upper_two = dists_two[i,j] + tolerances[inters_two[i,j]]
-                bound_upper = max(bound_upper_one, bound_upper_two)
+                constraint_upper_one = dists_one[i,j] + tolerances[inters_one[i,j]]
+                constraint_upper_two = dists_two[i,j] + tolerances[inters_two[i,j]]
+                constraint_upper = max(constraint_upper_one, constraint_upper_two)
                 # Factor of 0.8 used here
                 radius_weighting = 0.8
                 sum_radii = (hard_sphere_radius[atoms[i].element] + hard_sphere_radius[atoms[j].element]) * radius_weighting
-                bound_lower_one = dists_one[i,j] - tolerances[inters_one[i,j]]
-                bound_lower_two = dists_two[i,j] - tolerances[inters_two[i,j]]
-                bound_lower = max(min(bound_lower_one, bound_lower_two), sum_radii)
-                if bound_lower > bound_upper
+                constraint_lower_one = dists_one[i,j] - tolerances[inters_one[i,j]]
+                constraint_lower_two = dists_two[i,j] - tolerances[inters_two[i,j]]
+                constraint_lower = max(min(constraint_lower_one, constraint_lower_two), sum_radii)
+                if constraint_lower > constraint_upper
                     println(
-                        "Erroneous bound:\t",
+                        "Erroneous constraint:\t",
                         atomid(atoms[i]),
                         "\t",
                         atomid(atoms[j]),
                         "\t",
-                        round(bound_lower, 3),
+                        round(constraint_lower, 3),
                         "\t",
-                        round(bound_upper, 3)
+                        round(constraint_upper, 3)
                     )
-                    bound_lower = bound_upper
+                    constraint_lower = constraint_upper
                 end
-                push!(bounds_lower, bound_lower)
-                push!(bounds_upper, bound_upper)
+                push!(constraints_lower, constraint_lower)
+                push!(constraints_upper, constraint_upper)
                 push!(present_i, i)
                 push!(present_j, j)
             end
         end
     end
-    println("Found combined distance bounds from two structures")
-    return Bounds(atoms, bounds_lower, bounds_upper, hcat(present_i, present_j))
+    println("Found combined distance constraints from two structures")
+    return Constraints(atoms, constraints_lower, constraints_upper, hcat(present_i, present_j))
 end
 
 
 """
 Run the interaction finding pipeline with one or two structures.
-If one structure is given, returns a Bound object.
-If two structures are given, returns three Bound objects corresponding to the
-combined bounds, bounds from structure one and bounds from structure two.
+If one structure is given, returns a `Constraints` object.
+If two structures are given, returns three `Constraints` objects corresponding to the
+combined constraints, constraints from structure one and constraints from structure two.
 """
 function interactions(pdb_filepath::AbstractString,
                     dssp_filepath::AbstractString;
                     other_ratio::Real=defaults["other_ratio"],
-                    bound_weight::Real=defaults["bound_weight"])
+                    tolerance_weight::Real=defaults["tolerance_weight"])
     atoms = readpdb(pdb_filepath)
     dssps = readdssp(dssp_filepath, atoms)
     dists = distances(atoms)
@@ -697,7 +697,7 @@ function interactions(pdb_filepath::AbstractString,
     as = angles(atoms, bs)
     divs = divalents(atoms, bs, as)
     inters = findinteractions(atoms, dists, bs, as, divs, dssps)
-    return Bounds(atoms, dists, inters, other_ratio=other_ratio, bound_weight=bound_weight)
+    return Constraints(atoms, dists, inters, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
 end
 
 
@@ -706,7 +706,7 @@ function interactions(pdb_filepath_one::AbstractString,
                     pdb_filepath_two::AbstractString,
                     dssp_filepath_two::AbstractString;
                     other_ratio::Real=defaults["other_ratio"],
-                    bound_weight::Real=defaults["bound_weight"])
+                    tolerance_weight::Real=defaults["tolerance_weight"])
     atoms_all_one = readpdb(pdb_filepath_one)
     atoms_all_two = readpdb(pdb_filepath_two)
     atoms_one, atoms_two = findcommonatoms(atoms_all_one, atoms_all_two)
@@ -717,13 +717,13 @@ function interactions(pdb_filepath_one::AbstractString,
     angles_one = angles(atoms_one, bonds_one)
     divalents_one = divalents(atoms_one, bonds_one, angles_one)
     inters_one = findinteractions(atoms_one, dists_one, bonds_one, angles_one, divalents_one, dssps_one)
-    bounds_one = Bounds(atoms_one, dists_one, inters_one, other_ratio=other_ratio, bound_weight=bound_weight)
+    constraints_one = Constraints(atoms_one, dists_one, inters_one, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
     dists_two = distances(atoms_two)
     bonds_two = bonds(atoms_two, protein_bonds)
     angles_two = angles(atoms_two, bonds_two)
     divalents_two = divalents(atoms_two, bonds_two, angles_two)
     inters_two = findinteractions(atoms_two, dists_two, bonds_two, angles_two, divalents_two, dssps_two)
-    bounds_two = Bounds(atoms_two, dists_two, inters_two, other_ratio=other_ratio, bound_weight=bound_weight)
-    bounds_com = Bounds(atoms_one, dists_one, dists_two, inters_one, inters_two, other_ratio=other_ratio, bound_weight=bound_weight)
-    return bounds_com, bounds_one, bounds_two
+    constraints_two = Constraints(atoms_two, dists_two, inters_two, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
+    constraints_com = Constraints(atoms_one, dists_one, dists_two, inters_one, inters_two, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
+    return constraints_com, constraints_one, constraints_two
 end

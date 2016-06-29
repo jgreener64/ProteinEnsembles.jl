@@ -264,8 +264,8 @@ test_dssp_filepath = testfile("4AKE.dssp")
         1 0 15;
         12 15 0;
     ]
-    bounds = Bounds(atoms, dists, inters, other_ratio=0.0, bound_weight=1.0)
-    @test bounds.pres_inds == [2 1; 3 1]
+    constraints = Constraints(atoms, dists, inters, other_ratio=0.0, tolerance_weight=1.0)
+    @test constraints.pres_inds == [2 1; 3 1]
     inter_types, tolerances = interactioninfo(1.0)
     lower_real = [
         dists[2, 1] - tolerances[1],
@@ -275,8 +275,8 @@ test_dssp_filepath = testfile("4AKE.dssp")
         dists[2, 1] + tolerances[1],
         dists[3, 1] + tolerances[12],
     ]
-    @test isapprox(bounds.lower, lower_real)
-    @test isapprox(bounds.upper, upper_real)
+    @test isapprox(constraints.lower, lower_real)
+    @test isapprox(constraints.upper, upper_real)
 
 
     atom_a_one = Atom("O", "ALA", 'A', 20, [0.0, 0.0, 0.0], "O")
@@ -299,8 +299,8 @@ test_dssp_filepath = testfile("4AKE.dssp")
         1 0 15;
         10 15 0;
     ]
-    bounds = Bounds(atoms_a, dists_a, dists_b, inters_a, inters_b, other_ratio=0.0, bound_weight=1.0)
-    @test bounds.pres_inds == [2 1; 3 1]
+    constraints = Constraints(atoms_a, dists_a, dists_b, inters_a, inters_b, other_ratio=0.0, tolerance_weight=1.0)
+    @test constraints.pres_inds == [2 1; 3 1]
     inter_types, tolerances = interactioninfo(1.0)
     lower_real = [
         min(dists_a[2, 1] - tolerances[1], dists_b[2, 1] - tolerances[1]),
@@ -310,6 +310,6 @@ test_dssp_filepath = testfile("4AKE.dssp")
         max(dists_a[2, 1] + tolerances[1], dists_b[2, 1] + tolerances[1]),
         max(dists_a[3, 1] + tolerances[12], dists_b[3, 1] + tolerances[10]),
     ]
-    @test isapprox(bounds.lower, lower_real)
-    @test isapprox(bounds.upper, upper_real)
+    @test isapprox(constraints.lower, lower_real)
+    @test isapprox(constraints.upper, upper_real)
 end

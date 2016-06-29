@@ -58,10 +58,10 @@ Then, if all input files are in your current directory, run the program as follo
 # Generate an ensemble of 50 structures with an output directory ake_out
 exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out
 
-# Use a bound weighting of 0.5
+# Use a tolerance weighting of 0.5
 exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out -w 0.5
 
-# Generate an ensemble from a single structure with a bound weighting of 1.0
+# Generate an ensemble from a single structure with a tolerance weighting of 1.0
 exprose --i1 input_1.pdb --d1 input_1.dssp -n 50 -o exprose_out -w 1.0
 
 # Perturb the ensemble at 4 sites (see below)
@@ -88,14 +88,14 @@ Or, to split it up a little into the constituent functions:
 
 ```julia
 using ProteinEnsembles
-bounds_com, bounds_one, bounds_two = interactions(
+constraints_com, constraints_one, constraints_two = interactions(
     "input_1.pdb",
     "input_1.dssp",
     "input_2.pdb",
     "input_2.dssp"
 )
-ensemble_com = generateensemble(bounds_com, 50)
-runanalysis("exprose_out", ensemble_com, bounds_one, bounds_two)
+ensemble_com = generateensemble(constraints_com, 50)
+runanalysis("exprose_out", ensemble_com, constraints_one, constraints_two)
 ```
 
 The output directory contains the following:
