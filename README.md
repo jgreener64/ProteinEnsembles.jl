@@ -68,8 +68,6 @@ exprose --i1 input_1.pdb --d1 input_1.dssp -n 50 -o exprose_out -w 1.0
 exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out -m 4 -l pocket_points.pdb
 ```
 
-Allosteric site prediction and needs special file - script to produce this?
-
 The method may also be run from within Julia. The below Julia script does the same thing as the first example above:
 
 ```julia
@@ -97,21 +95,3 @@ constraints_com, constraints_one, constraints_two = interactions(
 ensemble_com = generateensemble(constraints_com, 50)
 runanalysis("exprose_out", ensemble_com, constraints_one, constraints_two)
 ```
-
-The output directory contains the following:
-- The generated structures in PDB format in `pdbs`.
-- The
-
-ProteinEnsembles.jl also contains some functions for protein structure analysis that may be useful, e.g. structural alignment, PCA. The plan in time is to move the useful parts into the `Bio.Structure` module of BioJulia. For now, here are a few examples:
-
-```julia
-# Align one protein to another and write a PDB file with the new coordinates
-
-
-```
-
-
-## Reproducing paper results
-
-The results from the paper can be generated...
-Dataset...
