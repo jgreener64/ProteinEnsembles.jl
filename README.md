@@ -4,11 +4,9 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/flfqouj1otkuf1rk?svg=true)](https://ci.appveyor.com/project/jgreener64/proteinensembles-jl)
 [![Coverage Status](https://coveralls.io/repos/github/jgreener64/ProteinEnsembles.jl/badge.svg?branch=master)](https://coveralls.io/github/jgreener64/ProteinEnsembles.jl?branch=master)
 
-**This is under development - do not trust anything here yet**
-
 This Julia package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites. The method is described in:
 
-JG Greener, I Filippis and MJE Sternberg, *Manuscript in preparation*
+Greener JG, Filippis I and Sternberg MJE, *Manuscript in preparation*
 
 
 ## Summary
