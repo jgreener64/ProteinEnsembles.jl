@@ -23,7 +23,7 @@ julia ~/.julia/v0.5/ProteinEnsembles/run.jl \
 
 ## Installation
 
-Julia is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running
+Julia v0.5 is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running
 
 ```julia
 Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")
@@ -47,7 +47,7 @@ Although organised as a Julia package, ProteinEnsembles.jl is primarily designed
 julia ~/.julia/v0.5/ProteinEnsembles/run.jl -h
 ```
 
-If you are using Julia v0.4 you will need to alter the path above. For easy access to the `run.jl` command you might like to add the following line to your profile, which lets you use `exprose` as a shortcut command:
+For easy access to the `run.jl` command you might like to add the following line to your profile, which lets you use `exprose` as a shortcut command:
 
 ```bash
 alias exprose="julia ~/.julia/v0.5/ProteinEnsembles/run.jl"

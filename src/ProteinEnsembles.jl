@@ -2,10 +2,6 @@ __precompile__()
 
 module ProteinEnsembles
 
-if VERSION < v"0.5-"
-    typealias ASCIIString String
-end
-
 include("types.jl")
 include("defaults.jl")
 include("bonds.jl")
