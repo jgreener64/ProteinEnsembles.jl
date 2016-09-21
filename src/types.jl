@@ -12,9 +12,9 @@ export
 
 "A pair of atoms with a covalent bond between them in the standard amino acids."
 type BondedPair
-    residue::ASCIIString
-    atom_one::ASCIIString
-    atom_two::ASCIIString
+    residue::String
+    atom_one::String
+    atom_two::String
 end
 
 function Base.show(io::IO, bonded_pair::BondedPair)
@@ -24,12 +24,12 @@ end
 
 "An atom from a PDB format file."
 type Atom
-    atom_name::ASCIIString
-    res_name::ASCIIString
+    atom_name::String
+    res_name::String
     chain_id::Char
     res_n::Int
     coords::Array{Float64,1}
-    element::ASCIIString
+    element::String
 end
 
 function Base.show(io::IO, atom::Atom)

@@ -42,7 +42,7 @@ end
 
 
 "Dictionary of atomic VDW radii in Angstroms."
-const vdw_radius = Dict{ASCIIString, Float64}(
+const vdw_radius = Dict{String, Float64}(
     "C"=> 1.70,
     "N"=> 1.55,
     "O"=> 1.52,
@@ -54,7 +54,7 @@ const vdw_radius = Dict{ASCIIString, Float64}(
 
 
 "Dictionary of atomic hard sphere radii in Angstroms."
-const hard_sphere_radius = Dict{ASCIIString, Float64}(
+const hard_sphere_radius = Dict{String, Float64}(
     "C"=> 0.67,
     "N"=> 0.56,
     "O"=> 0.48,
@@ -171,7 +171,7 @@ end
 
 
 "Dictionary of atomic information for fake modulator atoms."
-const mod_atom_info = Dict{ASCIIString, Any}(
+const mod_atom_info = Dict{String, Any}(
     "atom_name"=> "X",
     "res_name"=> "MOD",
     "chain_id"=> 'X',

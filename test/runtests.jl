@@ -1,7 +1,15 @@
 using ProteinEnsembles
-using BaseTestNext
 
-const Test = BaseTestNext
+if VERSION >= v"0.5.0-dev+7720"
+    using Base.Test
+else
+    using BaseTestNext
+    const Test = BaseTestNext
+end
+
+if VERSION < v"0.5-"
+    typealias ASCIIString String
+end
 
 testfile(path::AbstractString...) = Pkg.dir("ProteinEnsembles", "test", "test_files", path...)
 

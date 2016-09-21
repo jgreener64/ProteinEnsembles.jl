@@ -238,7 +238,7 @@ end
 Determines if two atoms in a 1-4 pair around the phi/psi angle are either in the same helix/strand or one of the residues is proline.
 Assumes atoms are a 1-4 pair around the phi/psi angle.
 """
-function istightphipsi(atom_one::Atom, atom_two::Atom, dssps::Dict{ASCIIString, Char})
+function istightphipsi(atom_one::Atom, atom_two::Atom, dssps::Dict{String, Char})
     answer = false
     if atom_one.res_name == "PRO" || atom_two.res_name == "PRO"
         answer = true
@@ -257,7 +257,7 @@ end
 Determines if two atoms in a 1-4 pair around the phi/psi angle are either in a loop region or one of the residues is glycine.
 Assumes atoms are a 1-4 pair around the phi/psi angle.
 """
-function isloosephipsi(atom_one::Atom, atom_two::Atom, dssps::Dict{ASCIIString, Char})
+function isloosephipsi(atom_one::Atom, atom_two::Atom, dssps::Dict{String, Char})
     answer = false
     if atom_one.res_name == "GLY" || atom_two.res_name == "GLY"
         answer = true
@@ -276,7 +276,7 @@ end
 Determines if two atoms are backbone atoms that are part of the same helix/strand and not more than 4 residues apart.
 Does not include 3-10 and pi helices.
 """
-function issecstr(atom_one::Atom, atom_two::Atom, atoms::Array{Atom,1}, dssps::Dict{ASCIIString, Char})
+function issecstr(atom_one::Atom, atom_two::Atom, atoms::Array{Atom,1}, dssps::Dict{String, Char})
     answer = false
     if abs(atom_one.res_n - atom_two.res_n) <= 4 && atom_one.chain_id == atom_two.chain_id
         # See if the atoms have the same secondary structure that is a helix/strand
@@ -495,7 +495,7 @@ function findinteractions(atoms::Array{Atom,1},
                     bonds::BitArray,
                     angles::BitArray,
                     divalents::BitArray,
-                    dssps::Dict{ASCIIString, Char})
+                    dssps::Dict{String, Char})
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
     @assert n_atoms == size(dists, 1) "Number of atoms in atom list and distance matrix are not the same"

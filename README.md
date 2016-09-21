@@ -11,19 +11,22 @@ Greener JG, Filippis I and Sternberg MJE, *Manuscript in preparation*
 
 ## Summary
 
-Install using `Pkg.clone(https://github.com/jgreener64/ProteinEnsembles.jl.git)` from within Julia v0.4. Run using
+Install using `Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")` from within Julia. Run using
 
 ```bash
-julia ~/.julia/v0.4/ProteinEnsembles/run.jl --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out
+julia ~/.julia/v0.5/ProteinEnsembles/run.jl \
+    --i1 input_1.pdb --d1 input_1.dssp \
+    --i2 input_2.pdb --d2 input_2.dssp \
+    -n 50 -o exprose_out
 ```
 
 
 ## Installation
 
-Julia v0.4 is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running
+Julia is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running
 
 ```julia
-Pkg.clone(https://github.com/jgreener64/ProteinEnsembles.jl.git)
+Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")
 ```
 
 from the Julia REPL. This will also automatically install a few other required Julia packages. If you want you can run the tests using `Pkg.test("ProteinEnsembles")`.
@@ -41,29 +44,32 @@ To use ProteinEnsembles.jl you will need the following:
 Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The script `run.jl` in the package directory implements this. For example, to see the command line options, run
 
 ```bash
-julia ~/.julia/v0.4/ProteinEnsembles/run.jl -h
+julia ~/.julia/v0.5/ProteinEnsembles/run.jl -h
 ```
 
-For easy access to the `run.jl` command you might like to add the following line to your profile, which lets you use `exprose` as a shortcut command:
+If you are using Julia v0.4 you will need to alter the path above. For easy access to the `run.jl` command you might like to add the following line to your profile, which lets you use `exprose` as a shortcut command:
 
 ```bash
-alias exprose="julia ~/.julia/v0.4/ProteinEnsembles/run.jl"
+alias exprose="julia ~/.julia/v0.5/ProteinEnsembles/run.jl"
 ```
 
 Then, if all input files are in your current directory, run the program as follows:
 
 ```bash
 # Generate an ensemble of 50 structures with an output directory ake_out
-exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out
+exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
+    --d2 input_2.dssp -n 50 -o exprose_out
 
 # Use a tolerance weighting of 0.5
-exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out -w 0.5
+exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
+    --d2 input_2.dssp -n 50 -o exprose_out -w 0.5
 
 # Generate an ensemble from a single structure with a tolerance weighting of 1.0
 exprose --i1 input_1.pdb --d1 input_1.dssp -n 50 -o exprose_out -w 1.0
 
 # Perturb the ensemble at 4 sites (see below)
-exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb --d2 input_2.dssp -n 50 -o exprose_out -m 4 -l pocket_points.pdb
+exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
+    --d2 input_2.dssp -n 50 -o exprose_out -m 4 -l pocket_points.pdb
 ```
 
 The method may also be run from within Julia. The below Julia script does the same thing as the first example above:

@@ -150,17 +150,17 @@ test_dssp_filepath = testfile("4AKE.dssp")
     # Test that atoms in the same helix return true
     atom_one = Atom("N", "ALA", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("O", "ALA", 'A', 21, [0.0, 0.0, 0.0], "O")
-    dssps = Dict{ASCIIString, Char}("20A"=> 'H', "21A"=> 'H')
+    dssps = Dict{String, Char}("20A"=> 'H', "21A"=> 'H')
     @test istightphipsi(atom_one, atom_two, dssps) == true
     # Test that atoms where one residue is proline return true
     atom_one = Atom("N", "PRO", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("O", "ALA", 'A', 21, [0.0, 0.0, 0.0], "O")
-    dssps = Dict{ASCIIString, Char}("20A"=> ' ', "21A"=> ' ')
+    dssps = Dict{String, Char}("20A"=> ' ', "21A"=> ' ')
     @test istightphipsi(atom_one, atom_two, dssps) == true
     # Test that atoms not in a tight phi/psi bond return false
     atom_one = Atom("N", "ALA", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("O", "ALA", 'A', 21, [0.0, 0.0, 0.0], "O")
-    dssps = Dict{ASCIIString, Char}("20A"=> ' ', "21A"=> ' ')
+    dssps = Dict{String, Char}("20A"=> ' ', "21A"=> ' ')
     @test istightphipsi(atom_one, atom_two, dssps) == false
 
 
@@ -168,17 +168,17 @@ test_dssp_filepath = testfile("4AKE.dssp")
     # Test that atoms in a loop region return true
     atom_one = Atom("N", "ALA", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("O", "ALA", 'A', 21, [0.0, 0.0, 0.0], "O")
-    dssps = Dict{ASCIIString, Char}("20A"=> ' ', "21A"=> ' ')
+    dssps = Dict{String, Char}("20A"=> ' ', "21A"=> ' ')
     @test isloosephipsi(atom_one, atom_two, dssps) == true
     # Test that atoms where one residue is glycine return true
     atom_one = Atom("N", "GLY", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("O", "ALA", 'A', 21, [0.0, 0.0, 0.0], "O")
-    dssps = Dict{ASCIIString, Char}("20A"=> 'H', "21A"=> 'H')
+    dssps = Dict{String, Char}("20A"=> 'H', "21A"=> 'H')
     @test isloosephipsi(atom_one, atom_two, dssps) == true
     # Test that atoms not in a loose phi/psi bond return false
     atom_one = Atom("N", "ALA", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("O", "ALA", 'A', 21, [0.0, 0.0, 0.0], "O")
-    dssps = Dict{ASCIIString, Char}("20A"=> 'H', "21A"=> 'H')
+    dssps = Dict{String, Char}("20A"=> 'H', "21A"=> 'H')
     @test isloosephipsi(atom_one, atom_two, dssps) == false
 
 

@@ -88,7 +88,7 @@ function runpipeline{T <: AbstractString}(;
                     n_strucs::Integer=defaults["n_strucs"],
                     tolerance_weight::Real=defaults["tolerance_weight"],
                     other_ratio::Real=defaults["other_ratio"],
-                    extra_pdbs::Array{T,1}=ASCIIString[],
+                    extra_pdbs::Array{T,1}=String[],
                     mod_path::Union{AbstractString, Void}=nothing,
                     n_mods::Integer=0)
     @assert i1 != nothing && d1 != nothing "Arguments i1 and d1 required"
@@ -141,7 +141,7 @@ end
 
 
 "Make the outer results directory and any inner directories from a list."
-function makedirectories(out_dir::AbstractString, inner_dirs::Array{ASCIIString,1})
+function makedirectories(out_dir::AbstractString, inner_dirs::Array{String,1})
     if isdir(out_dir)
         println("Output directory \"$out_dir\" already exists - beware of overwriting files!")
     else
@@ -162,7 +162,7 @@ function runanalysis{T <: AbstractString}(
                     out_dir::AbstractString,
                     ensemble::ModelledEnsemble,
                     constraints::Constraints;
-                    extra_pdbs::Array{T,1}=ASCIIString[],
+                    extra_pdbs::Array{T,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
                     out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
@@ -231,7 +231,7 @@ function runanalysis{T <: AbstractString}(
                     ensemble_com::ModelledEnsemble,
                     constraints_one::Constraints,
                     constraints_two::Constraints;
-                    extra_pdbs::Array{T,1}=ASCIIString[],
+                    extra_pdbs::Array{T,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
                     out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble

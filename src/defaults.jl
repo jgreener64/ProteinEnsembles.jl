@@ -2,7 +2,7 @@ export defaults
 
 
 "Dictionary of default arguments."
-const defaults = Dict{ASCIIString, Any}(
+const defaults = Dict{String, Any}(
     "out_dir"                 => "exprose_out",
     "n_strucs"                => 250,
     "tolerance_weight"        => 0.3,
