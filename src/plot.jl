@@ -53,13 +53,13 @@ function plotpcs(out_prefix::AbstractString,
         pcsaddlayer!(layers, pcs_ref_two, (i, j), "green")
         pcsaddlayer!(layers, pcs_mod, (i, j), "cyan")
         pcsaddlayer!(layers, pcs_extra, (i, j), "black")
-        plot = Gadfly.plot(
+        p = plot(
             layers...,
             Guide.xlabel("PC $i / Angstroms"),
             Guide.ylabel("PC $j / Angstroms"),
             plottheme,
         )
-        Gadfly.draw(PNG(out_filepath, 20cm, 20cm), plot)
+        draw(PNG(out_filepath, 20cm, 20cm), p)
     end
     println("Plotted principal components to file(s) \"$(out_prefix)_x_y.png\"")
 end
@@ -105,12 +105,12 @@ function plotfluctuations(out_filepath::AbstractString,
             pointtheme("cyan"),
         )[1])
     end
-    plot = Gadfly.plot(
+    p = plot(
         layers...,
         Guide.xlabel("Residue index"),
         Guide.ylabel("Mean square fluctuation / Angstroms"),
         plottheme,
     )
-    Gadfly.draw(PNG(out_filepath, 20cm, 15cm), plot)
+    draw(PNG(out_filepath, 20cm, 15cm), p)
     println("Plotted fluctuations to file \"$out_filepath\"")
 end

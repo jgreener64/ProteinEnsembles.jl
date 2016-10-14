@@ -66,8 +66,8 @@ function fillconstraints(constraints::Constraints;
                 continue
             end
             # Adjust coordinates
-            distance = sqrt(sq_dist)
-            prefactor = learning_rate * 0.5 * (constraint_near - distance) / distance
+            dist = sqrt(sq_dist)
+            prefactor = learning_rate * 0.5 * (constraint_near - dist) / dist
             for k in 1:3
                 coord_new_i[k] = newcoords(k, i, j, prefactor, coords)
                 coord_new_j[k] = newcoords(k, j, i, prefactor, coords)
@@ -96,12 +96,12 @@ function errorscore(constraints::Constraints, coords::Array{Float64})
     score = 0.0
     for m in 1:size(pres_inds, 1)
         k, l = pres_inds[m,:]
-        distance = norm(coords[:,k] - coords[:,l])
-        if distance < constraints_lower[m]
+        dist = norm(coords[:,k] - coords[:,l])
+        if dist < constraints_lower[m]
             # Arbitrary minimum constraint size used here to prevent division by zero and infinite scores
-            score += ((distance-constraints_lower[m])^2) / max((constraints_upper[m]-constraints_lower[m]), 0.001)
-        elseif distance > constraints_upper[m]
-            score += ((distance-constraints_upper[m])^2) / max((constraints_upper[m]-constraints_lower[m]), 0.001)
+            score += ((dist-constraints_lower[m])^2) / max((constraints_upper[m]-constraints_lower[m]), 0.001)
+        elseif dist > constraints_upper[m]
+            score += ((dist-constraints_upper[m])^2) / max((constraints_upper[m]-constraints_lower[m]), 0.001)
         end
     end
     return score

@@ -91,22 +91,22 @@ end
 Calculate the bond angle matrix for a list of atoms.
 Returns a 2D boolean array of whether bond angles are present.
 """
-function angles(atoms::Array{Atom,1}, bonds::BitArray)
+function angles(atoms::Array{Atom,1}, bs::BitArray)
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
-    @assert n_atoms == size(bonds, 1) "Number of atoms in atom list and bonding matrix are not the same"
-    angles = falses(n_atoms, n_atoms)
+    @assert n_atoms == size(bs, 1) "Number of atoms in atom list and bonding matrix are not the same"
+    angs = falses(n_atoms, n_atoms)
     n_angles = 0
     for i in 1:n_atoms
         for j in 1:i-1
             # Atoms have to be on the same or adjacent residues
             if atoms[i].chain_id == atoms[j].chain_id && abs(atoms[i].res_n - atoms[j].res_n) <= 1
                 # Covalently-bonded atoms cannot be part of a 1-3 system
-                if !bonds[i, j]
+                if !bs[i, j]
                     for k in 1:n_atoms
-                        if bonds[i, k] && bonds[k, j]
-                            angles[i, j] = true
-                            angles[j, i] = true
+                        if bs[i, k] && bs[k, j]
+                            angs[i, j] = true
+                            angs[j, i] = true
                             n_angles += 1
                             break
                         end
@@ -115,7 +115,7 @@ function angles(atoms::Array{Atom,1}, bonds::BitArray)
             end
         end
     end
-    return angles
+    return angs
 end
 
 
@@ -123,23 +123,23 @@ end
 Calculate the divalent matrix for a list of atoms.
 Returns a 2D boolean array of whether divalents are present.
 """
-function divalents(atoms::Array{Atom,1}, bonds::BitArray, angles::BitArray)
+function divalents(atoms::Array{Atom,1}, bs::BitArray, angs::BitArray)
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
-    @assert n_atoms == size(bonds, 1) "Number of atoms in atom list and bonding matrix are not the same"
-    @assert n_atoms == size(angles, 1) "Number of atoms in atom list and angle matrix are not the same"
-    divalents = falses(n_atoms, n_atoms)
+    @assert n_atoms == size(bs, 1) "Number of atoms in atom list and bonding matrix are not the same"
+    @assert n_atoms == size(angs, 1) "Number of atoms in atom list and angle matrix are not the same"
+    divs = falses(n_atoms, n_atoms)
     n_divalents = 0
     for i in 1:n_atoms
         for j in 1:i-1
             # Atoms have to be on the same or adjacent residues
             if atoms[i].chain_id == atoms[j].chain_id && abs(atoms[i].res_n - atoms[j].res_n) <= 1
                 # Being part of a covalent or 1-3 system prevents a pair from being part of a 1-4 system
-                if !bonds[i, j] && !angles[i, j]
+                if !bs[i, j] && !angs[i, j]
                     for k in 1:n_atoms
-                        if angles[i, k] && bonds[k, j]
-                            divalents[i, j] = true
-                            divalents[j, i] = true
+                        if angs[i, k] && bs[k, j]
+                            divs[i, j] = true
+                            divs[j, i] = true
                             n_divalents += 1
                             break
                         end
@@ -148,7 +148,7 @@ function divalents(atoms::Array{Atom,1}, bonds::BitArray, angles::BitArray)
             end
         end
     end
-    return divalents
+    return divs
 end
 
 
@@ -359,7 +359,7 @@ hydrogen-acceptor distance is <= 2.5 Angstroms and the donor-hydrogen-acceptor a
 Won't pick up the donor-H pairing, even though it is part of the H bond, as this pairing is covalent.
 Sulfur not considered.
 """
-function ishbond(atom_id_one::Integer, atom_id_two::Integer, atoms::Array{Atom,1}, dists::Array{Float64}, bonds::BitArray)
+function ishbond(atom_id_one::Integer, atom_id_two::Integer, atoms::Array{Atom,1}, dists::Array{Float64}, bs::BitArray)
     answer = false
     # Apply crude distance limit and check that atoms are not on the same residue
     if dists[atom_id_one, atom_id_two] <= 3.5 && (atoms[atom_id_one].res_n != atoms[atom_id_two].res_n || atoms[atom_id_one].chain_id != atoms[atom_id_two].chain_id)
@@ -374,7 +374,7 @@ function ishbond(atom_id_one::Integer, atom_id_two::Integer, atoms::Array{Atom,1
             atom_id_b = atom_id_two
             # Find all Hs bonded to either atom that are within 2.5 Angstroms of the other atom
             for i in 1:n_atoms
-                if atoms[i].element == "H" && ((bonds[i,atom_id_one] && dists[i,atom_id_two] <= 2.5) || (bonds[i,atom_id_two] && dists[i,atom_id_one] <= 2.5))
+                if atoms[i].element == "H" && ((bs[i,atom_id_one] && dists[i,atom_id_two] <= 2.5) || (bs[i,atom_id_two] && dists[i,atom_id_one] <= 2.5))
                     push!(atom_h_ids, i)
                 end
             end
@@ -385,7 +385,7 @@ function ishbond(atom_id_one::Integer, atom_id_two::Integer, atoms::Array{Atom,1
             push!(atom_h_ids, atom_id_two)
             atom_id_a = atom_id_one
             for i in 1:n_atoms
-                if bonds[i,atom_id_two]
+                if bs[i,atom_id_two]
                     atom_id_b = i
                     dist = dists[i,atom_id_one]
                     break
@@ -396,7 +396,7 @@ function ishbond(atom_id_one::Integer, atom_id_two::Integer, atoms::Array{Atom,1
             push!(atom_h_ids, atom_id_one)
             atom_id_a = atom_id_two
             for i in 1:n_atoms
-                if bonds[i,atom_id_one]
+                if bs[i,atom_id_one]
                     atom_id_b = i
                     dist = dists[i,atom_id_two]
                     break
@@ -492,29 +492,29 @@ Interactions the same as De Groot et. al., Structure, 1997, but cis/trans limits
 """
 function findinteractions(atoms::Array{Atom,1},
                     dists::Array{Float64},
-                    bonds::BitArray,
-                    angles::BitArray,
-                    divalents::BitArray,
+                    bs::BitArray,
+                    angs::BitArray,
+                    divs::BitArray,
                     dssps::Dict{String, Char})
     n_atoms = length(atoms)
     @assert n_atoms > 0 "No atoms in atom list"
     @assert n_atoms == size(dists, 1) "Number of atoms in atom list and distance matrix are not the same"
-    @assert n_atoms == size(bonds, 1) "Number of atoms in atom list and bonding matrix are not the same"
-    @assert n_atoms == size(angles, 1) "Number of atoms in atom list and angle matrix are not the same"
-    @assert n_atoms == size(divalents, 1) "Number of atoms in atom list and divalent matrix are not the same"
+    @assert n_atoms == size(bs, 1) "Number of atoms in atom list and bonding matrix are not the same"
+    @assert n_atoms == size(angs, 1) "Number of atoms in atom list and angle matrix are not the same"
+    @assert n_atoms == size(divs, 1) "Number of atoms in atom list and divalent matrix are not the same"
     @assert length(dssps) > 0 "DSSP dictionary is empty"
     inters = zeros(Int, n_atoms, n_atoms)
     inter_types, tolerances = interactioninfo()
     inter_counter = zeros(Int, length(inter_types))
     for i in 1:n_atoms
         for j in 1:i-1
-            if bonds[i,j]
+            if bs[i,j]
                 n_to_set = 1
-            elseif angles[i,j]
+            elseif angs[i,j]
                 n_to_set = 2
             elseif isring(atoms[i], atoms[j])
                 n_to_set = 3
-            elseif divalents[i,j]
+            elseif divs[i,j]
                 if isdbonefour(atoms[i], atoms[j])
                     n_to_set = 4
                 elseif isomonefour(atoms[i], atoms[j])
@@ -534,7 +534,7 @@ function findinteractions(atoms::Array{Atom,1},
                 n_to_set = 10
             elseif issaltbridge(atoms[i], atoms[j], atoms, dists)
                 n_to_set = 11
-            elseif ishbond(i, j, atoms, dists, bonds)
+            elseif ishbond(i, j, atoms, dists, bs)
                 n_to_set = 12
             elseif ishydrophobic(atoms[i], atoms[j], dists[i, j], 0.5)
                 n_to_set = 13
@@ -694,9 +694,9 @@ function interactions(pdb_filepath::AbstractString,
     dssps = readdssp(dssp_filepath, atoms)
     dists = distances(atoms)
     bs = bonds(atoms, protein_bonds)
-    as = angles(atoms, bs)
-    divs = divalents(atoms, bs, as)
-    inters = findinteractions(atoms, dists, bs, as, divs, dssps)
+    angs = angles(atoms, bs)
+    divs = divalents(atoms, bs, angs)
+    inters = findinteractions(atoms, dists, bs, angs, divs, dssps)
     return Constraints(atoms, dists, inters, other_ratio=other_ratio, tolerance_weight=tolerance_weight)
 end
 
