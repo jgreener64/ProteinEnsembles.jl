@@ -3,6 +3,7 @@
 
 export
     runfromshell,
+    paramfromshell,
     runpipeline,
     runanalysis
 
@@ -10,9 +11,13 @@ export
 using ArgParse
 
 
-"Read arguments from command line."
-function parsecommandline()
-    s = ArgParseSettings()
+const exprose_repo_url = "https://github.com/jgreener64/ProteinEnsembles.jl"
+
+
+"Read arguments from command line for an ExProSE run."
+function parsecommandlinerun()
+    s = ArgParseSettings(prog="julia run.jl",
+                    description="Run the ExProSE procedure to generate ensembles of protein structures. See $exprose_repo_url for the ExProSE docs and citation.")
     @add_arg_table s begin
         "--i1"
             help = "filepath to the first input PDB file (required)"
@@ -55,6 +60,48 @@ function parsecommandline()
             help = "number of modulators to separately perturb the ensemble with; set this, along with mod_path, to perturb the ensemble"
             arg_type = Int
             default = 0
+    end
+    return parse_args(s)
+end
+
+
+"Read arguments from command line for an ExProSE auto-parameterisation."
+function parsecommandlineparam()
+    s = ArgParseSettings(prog="julia param.jl",
+                    description="Run the ExProSE auto-parameterisation procedure. See $exprose_repo_url for the ExProSE docs and citation.")
+    @add_arg_table s begin
+        "--i1"
+            help = "filepath to the first input PDB file (required)"
+            arg_type = AbstractString
+            required = true
+        "--d1"
+            help = "filepath to the DSSP file for the first input PDB file (required)"
+            arg_type = AbstractString
+            required = true
+        "--i2"
+            help = "filepath to the second input PDB file (required)"
+            arg_type = AbstractString
+            required = true
+        "--d2"
+            help = "filepath to the DSSP file for the second input PDB file (required)"
+            arg_type = AbstractString
+            required = true
+        "--out_dir", "-o"
+            help = "directory to write output to"
+            arg_type = AbstractString
+            default = defaults["out_dir_param"]
+        "--n_strucs", "-n"
+            help = "number of structures to generate"
+            arg_type = Int
+            default = defaults["n_strucs_param"]
+        "--other_ratio", "-r"
+            help = "ratio of non-specific interactions to atom number"
+            arg_type = Float64
+            default = defaults["other_ratio"]
+        "--tmscore", "-t"
+            help = "executable to run TMscore, see http://zhanglab.ccmb.med.umich.edu/TM-score"
+            arg_type = AbstractString
+            default = defaults["tmscore_path"]
     end
     return parse_args(s)
 end
@@ -298,5 +345,14 @@ function runanalysis{T <: AbstractString}(
     # Write perturbation values
     if length(ensemble_mods) > 0
         writefloatarray("$out_dir/perturbations.txt", av_rmsds)
+    end
+end
+
+
+"Run auto-parameterisation from command line."
+function paramfromshell(parsed_args)
+    # Copy printing format from runpipeline
+    if !tmscorepathvalid(parsed_args["tmscore"])
+        throw(ArgumentError("Not a valid TMscore path: \"$(parsed_args["tmscore"])\""))
     end
 end

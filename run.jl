@@ -2,4 +2,4 @@
 
 using ProteinEnsembles
 
-runfromshell(ProteinEnsembles.parsecommandline())
+runfromshell(ProteinEnsembles.parsecommandlinerun())

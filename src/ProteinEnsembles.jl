@@ -13,6 +13,7 @@ include("align.jl")
 include("pca.jl")
 include("perturb.jl")
 include("plot.jl")
+include("tmscore.jl")
 include("pipeline.jl")
 
 end # ProteinEnsembles

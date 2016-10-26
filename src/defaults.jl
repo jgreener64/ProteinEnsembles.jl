@@ -21,4 +21,7 @@ const defaults = Dict{String, Any}(
     "mod_inter_cutoff"        => 7.0,
     "mod_inter_tolerance"     => 0.1,
     "mod_min_constraint_dist" => 0.001,
+    "out_dir_param"           => "exprose_param",
+    "n_strucs_param"          => 10,
+    "tmscore_path"            => "TMscore",
 )
