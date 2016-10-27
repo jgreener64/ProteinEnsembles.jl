@@ -98,6 +98,10 @@ function parsecommandlineparam()
             help = "ratio of non-specific interactions to atom number"
             arg_type = Float64
             default = defaults["other_ratio"]
+        "--fraction", "-f"
+            help = "fraction of structures between input structures to search for during parameterisation"
+            arg_type = Float64
+            default = defaults["frac_between"]
         "--tmscore", "-t"
             help = "executable to run TMscore, see http://zhanglab.ccmb.med.umich.edu/TM-score"
             arg_type = AbstractString
@@ -125,7 +129,23 @@ function runfromshell(parsed_args)
 end
 
 
-"""Wrapper function to run the whole pipeline."""
+"Run auto-parameterisation from command line."
+function paramfromshell(parsed_args)
+    parampipeline(;
+        i1=parsed_args["i1"],
+        d1=parsed_args["d1"],
+        i2=parsed_args["i2"],
+        d2=parsed_args["d2"],
+        out_dir=parsed_args["out_dir"],
+        n_strucs=parsed_args["n_strucs"],
+        other_ratio=parsed_args["other_ratio"],
+        frac_between=parsed_args["fraction"],
+        tmscore_path=parsed_args["tmscore"]
+    )
+end
+
+
+"Wrapper function to run the whole pipeline."
 function runpipeline{T <: AbstractString}(;
                     i1::Union{AbstractString, Void}=nothing,
                     d1::Union{AbstractString, Void}=nothing,
@@ -188,7 +208,7 @@ end
 
 
 "Make the outer results directory and any inner directories from a list."
-function makedirectories(out_dir::AbstractString, inner_dirs::Array{String,1})
+function makedirectories(out_dir::AbstractString, inner_dirs::Array{String,1}=String[])
     if isdir(out_dir)
         println("Output directory \"$out_dir\" already exists - beware of overwriting files!")
     else
@@ -349,10 +369,79 @@ function runanalysis{T <: AbstractString}(
 end
 
 
-"Run auto-parameterisation from command line."
-function paramfromshell(parsed_args)
-    # Copy printing format from runpipeline
-    if !tmscorepathvalid(parsed_args["tmscore"])
-        throw(ArgumentError("Not a valid TMscore path: \"$(parsed_args["tmscore"])\""))
+"Run the auto-parameterisation pipeline."
+function parampipeline(;
+                    i1::Union{AbstractString, Void}=nothing,
+                    d1::Union{AbstractString, Void}=nothing,
+                    i2::Union{AbstractString, Void}=nothing,
+                    d2::Union{AbstractString, Void}=nothing,
+                    out_dir::AbstractString=defaults["out_dir_param"],
+                    n_strucs::Integer=defaults["n_strucs_param"],
+                    other_ratio::Real=defaults["other_ratio"],
+                    frac_between::Real=defaults["frac_between"],
+                    tmscore_path::AbstractString=defaults["tmscore_path"],
+                    out_prefix::AbstractString=defaults["out_prefix"],
+                    param_tw_start::Real=defaults["param_tw_start"],
+                    param_tw_increment::Real=defaults["param_tw_increment"])
+    @assert i1 != nothing && d1 != nothing && i2 != nothing && d2 != nothing "Arguments i1, d1, i2 and d2 required"
+    @assert 0.0 <= frac_between <= 1.0 "frac_between cannot be less than 0.0 or more than 1.0"
+    @assert param_tw_start >= 0.0 "param_tw_start cannot be negative"
+    @assert param_tw_increment > 0.0 "param_tw_increment must be positive"
+    @assert tmscorepathvalid(tmscore_path) "Not a valid TMscore path: \"$tmscore_path\""
+
+    # Print inputs
+    println()
+    println("-- ExProSE auto-parameterisation --")
+    println()
+    println("Arguments:")
+    println("  i1               - ", i1)
+    println("  d1               - ", d1)
+    println("  i2               - ", i2)
+    println("  d2               - ", d2)
+    println("  out_dir          - ", out_dir)
+    println("  n_strucs         - ", n_strucs)
+    println("  other_ratio      - ", other_ratio)
+    println("  frac_between     - ", frac_between)
+    println("  tmscore          - ", tmscore_path)
+    println()
+    println("Beginning auto-parameterisation")
+
+    makedirectories(out_dir)
+    tw = param_tw_start
+    found = false
+    fracs = Float64[]
+    while !found
+        if tw < 0.0
+            println("Tolerance weight cannot be reduced any further")
+            println("Suggested tolerance weight is 0.0")
+            break
+        end
+        println("Running with tolerance weight of ", tw)
+        constraints_com, constraints_one, constraints_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, tolerance_weight=tw)
+        ensemble_com = generateensemble(constraints_com, n_strucs)
+        selfalignensemble!(ensemble_com)
+        lab = replace(string(tw), ".", "_") # Replace dots with underscores for directory name
+        if !isdir("$out_dir/tw_$lab")
+            mkdir("$out_dir/tw_$lab")
+            mkdir("$out_dir/tw_$lab/pdbs")
+        end
+        ens_prefix = "$out_dir/tw_$lab/pdbs/$out_prefix.pdb"
+        writeensemble(ens_prefix, ensemble_com)
+        frac = fractionbetweeninputs(ens_prefix, length(ensemble_com.strucs), i1, i2; command=tmscore_path)
+        println("Fraction of structures between inputs is ", frac)
+        push!(fracs, frac)
+        if frac >= frac_between
+            println("Fraction is at least threshold of ", frac_between)
+            println("Suggested tolerance weight is ", tw)
+            found = true
+        else
+            println("Fraction is below threshold of ", frac_between)
+            println("Reducing tolerance weight and running again")
+        end
+        # This causes weird float things to happen
+        tw -= param_tw_increment
     end
+    # Should write tw and fraction
+    writefloatarray("$out_dir/fractions.txt", fracs; dec_places=2)
+    println("Done")
 end
