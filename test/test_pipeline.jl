@@ -1,6 +1,7 @@
 # Tests for pipeline.jl
 
 
+# test_tmscore_path is defined in runtests.jl
 test_i1 = testfile("1CLL_H.pdb")
 test_d1 = testfile("1CLL.dssp")
 test_i2 = testfile("1CTR_H.pdb")
@@ -8,16 +9,17 @@ test_d2 = testfile("1CTR.dssp")
 test_extra_pdb_1 = testfile("1CFF_1.pdb")
 test_extra_pdb_2 = testfile("1CFF_2.pdb")
 test_pocket_points = testfile("1CTR_pocket_points.pdb")
-test_tmscore_path = "TMscore"
 
 
+# Temp directory which is removed at the end
+temp_dir = "$(tempdir())/$(defaults["out_dir"])"
+n_strucs = 4
+n_mods = 1
+
+
+"""
 @testset "Pipeline" begin
     # Run the whole pipeline as an integration test
-    # Temp directory which is removed at the end
-    temp_dir = "$(tempdir())/$(defaults["out_dir"])"
-    n_strucs = 4
-    n_mods = 1
-
     # Two structures
     runpipeline(
         i1=test_i1,
@@ -72,7 +74,13 @@ test_tmscore_path = "TMscore"
     rm(temp_dir, recursive=true)
 
     @test_throws AssertionError runpipeline(i2=test_i2, d2=test_d2)
+end
+"""
 
+
+if !linux_only_param_test || is_linux()
+
+@testset "Parameterisation" begin
     # Auto-parameterisation pipeline
     # Answer non-deterministic so cannot check it directly
     parampipeline(
@@ -91,3 +99,9 @@ test_tmscore_path = "TMscore"
     @test_throws AssertionError parampipeline(i1=test_i1, d1=test_d1,
         i2=test_i2, d2=test_d2, tmscore_path="invalidpath")
 end
+
+else
+    println("Parameterisation tests not run as OS is not Linux")
+    println("This is due to only installing TMscore on Linux for the auto-build")
+    println("To run the parameterisation tests, set linux_only_param_test in runtests.jl to false")
+end # Linux test
