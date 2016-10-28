@@ -16,6 +16,7 @@ export
     writepcviews,
     writeintarray,
     writefloatarray,
+    writestringarray,
     readpocketpoints
 
 
@@ -322,6 +323,17 @@ function writefloatarray(out_filepath::AbstractString, vals::Array{Float64,1}; d
     open(out_filepath, "w") do out_file
         for val in vals
             println(out_file, round(val, dec_places))
+        end
+    end
+end
+
+
+"Write an array of strings to an output file."
+function writestringarray{T <: AbstractString}(out_filepath::AbstractString, vals::Array{T,1})
+    checkfilepath(out_filepath)
+    open(out_filepath, "w") do out_file
+        for val in vals
+            println(out_file, val)
         end
     end
 end

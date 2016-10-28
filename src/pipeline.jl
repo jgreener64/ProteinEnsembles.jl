@@ -407,15 +407,9 @@ function parampipeline(;
     println("Beginning auto-parameterisation")
 
     makedirectories(out_dir)
-    tw = param_tw_start
     found = false
     fracs = Float64[]
-    while !found
-        if tw < 0.0
-            println("Tolerance weight cannot be reduced any further")
-            println("Suggested tolerance weight is 0.0")
-            break
-        end
+    for tw in param_tw_start:-param_tw_increment:0.0
         println("Running with tolerance weight of ", tw)
         constraints_com, constraints_one, constraints_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, tolerance_weight=tw)
         ensemble_com = generateensemble(constraints_com, n_strucs)
@@ -434,14 +428,18 @@ function parampipeline(;
             println("Fraction is at least threshold of ", frac_between)
             println("Suggested tolerance weight is ", tw)
             found = true
+            break
         else
             println("Fraction is below threshold of ", frac_between)
             println("Reducing tolerance weight and running again")
         end
-        # This causes weird float things to happen
-        tw -= param_tw_increment
     end
-    # Should write tw and fraction
-    writefloatarray("$out_dir/fractions.txt", fracs; dec_places=2)
+    if !found
+        println("Tolerance weight cannot be reduced any further")
+        println("Suggested tolerance weight is 0.0")
+    end
+    tws = collect(param_tw_start:-param_tw_increment:0.0)
+    lines = ["$(tws[i])\t$frac" for (i, frac) in enumerate(fracs)]
+    writestringarray("$out_dir/fractions.txt", lines)
     println("Done")
 end
