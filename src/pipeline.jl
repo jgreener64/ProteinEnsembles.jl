@@ -5,7 +5,8 @@ export
     runfromshell,
     paramfromshell,
     runpipeline,
-    runanalysis
+    runanalysis,
+    parampipeline
 
 
 using ArgParse
