@@ -11,14 +11,16 @@ testfile(path::AbstractString...) = Pkg.dir("ProteinEnsembles", "test", "test_fi
 linux_only_param_test = true
 
 
-# Optional argument is path to TMscore executable
-if isempty(ARGS)
-    test_tmscore_path = "TMscore"
-else
-    test_tmscore_path = ARGS[1]
+if !linux_only_param_test || is_linux()
+    # Optional argument is path to TMscore executable
+    if isempty(ARGS)
+        test_tmscore_path = "TMscore"
+    else
+        test_tmscore_path = ARGS[1]
+    end
+    @assert tmscorepathvalid(test_tmscore_path) "Not a valid TMscore path: \"$test_tmscore_path\""
+    println("TMscore executable path is taken as \"$test_tmscore_path\"")
 end
-@assert tmscorepathvalid(test_tmscore_path) "Not a valid TMscore path: \"$test_tmscore_path\""
-println("TMscore executable path is taken as \"$test_tmscore_path\"")
 
 
 include("test_types.jl")

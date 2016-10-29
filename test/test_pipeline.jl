@@ -17,65 +17,63 @@ n_strucs = 4
 n_mods = 1
 
 
-"""
-@testset "Pipeline" begin
-    # Run the whole pipeline as an integration test
-    # Two structures
-    runpipeline(
-        i1=test_i1,
-        d1=test_d1,
-        i2=test_i2,
-        d2=test_d2,
-        out_dir=temp_dir,
-        n_strucs=n_strucs,
-        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
-    )
-    # Check that output files are produced
-    @test length(readdir("$temp_dir/pdbs")) == n_strucs
-    rm(temp_dir, recursive=true)
-
-    # One structure
-    runpipeline(
-        i1=test_i1,
-        d1=test_d1,
-        out_dir=temp_dir,
-        n_strucs=n_strucs,
-        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
-    )
-    @test length(readdir("$temp_dir/pdbs")) == n_strucs
-    rm(temp_dir, recursive=true)
-
-    # Two structures with perturbation
-    runpipeline(
-        i1=test_i1,
-        d1=test_d1,
-        i2=test_i2,
-        d2=test_d2,
-        out_dir=temp_dir,
-        n_strucs=n_strucs,
-        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
-        mod_path=test_pocket_points,
-        n_mods=n_mods,
-    )
-    @test length(readdir("$temp_dir/pdbs_mod_1")) == n_strucs
-    rm(temp_dir, recursive=true)
-
-    # One structure with perturbation
-    runpipeline(
-        i1=test_i2,
-        d1=test_d2,
-        out_dir=temp_dir,
-        n_strucs=n_strucs,
-        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
-        mod_path=test_pocket_points,
-        n_mods=n_mods,
-    )
-    @test length(readdir("$temp_dir/pdbs_mod_1")) == n_strucs
-    rm(temp_dir, recursive=true)
-
-    @test_throws AssertionError runpipeline(i2=test_i2, d2=test_d2)
-end
-"""
+#@testset "Pipeline" begin
+#    # Run the whole pipeline as an integration test
+#    # Two structures
+#    runpipeline(
+#        i1=test_i1,
+#        d1=test_d1,
+#        i2=test_i2,
+#        d2=test_d2,
+#        out_dir=temp_dir,
+#        n_strucs=n_strucs,
+#        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
+#    )
+#    # Check that output files are produced
+#    @test length(readdir("$temp_dir/pdbs")) == n_strucs
+#    rm(temp_dir, recursive=true)
+#
+#    # One structure
+#    runpipeline(
+#        i1=test_i1,
+#        d1=test_d1,
+#        out_dir=temp_dir,
+#        n_strucs=n_strucs,
+#        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
+#    )
+#    @test length(readdir("$temp_dir/pdbs")) == n_strucs
+#    rm(temp_dir, recursive=true)
+#
+#    # Two structures with perturbation
+#    runpipeline(
+#        i1=test_i1,
+#        d1=test_d1,
+#        i2=test_i2,
+#        d2=test_d2,
+#        out_dir=temp_dir,
+#        n_strucs=n_strucs,
+#        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
+#        mod_path=test_pocket_points,
+#        n_mods=n_mods,
+#    )
+#    @test length(readdir("$temp_dir/pdbs_mod_1")) == n_strucs
+#    rm(temp_dir, recursive=true)
+#
+#    # One structure with perturbation
+#    runpipeline(
+#        i1=test_i2,
+#        d1=test_d2,
+#        out_dir=temp_dir,
+#        n_strucs=n_strucs,
+#        extra_pdbs=[test_extra_pdb_1, test_extra_pdb_2],
+#        mod_path=test_pocket_points,
+#        n_mods=n_mods,
+#    )
+#    @test length(readdir("$temp_dir/pdbs_mod_1")) == n_strucs
+#    rm(temp_dir, recursive=true)
+#
+#    @test_throws AssertionError runpipeline(i2=test_i2, d2=test_d2)
+#end
 
 
 if !linux_only_param_test || is_linux()
@@ -103,5 +101,5 @@ end
 else
     println("Parameterisation tests not run as OS is not Linux")
     println("This is due to only installing TMscore on Linux for the auto-build")
-    println("To run the parameterisation tests, set linux_only_param_test in runtests.jl to false")
+    println("To run the parameterisation tests, set linux_only_param_test to false in runtests.jl")
 end # Linux test
