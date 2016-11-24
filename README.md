@@ -4,14 +4,14 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/flfqouj1otkuf1rk?svg=true)](https://ci.appveyor.com/project/jgreener64/proteinensembles-jl)
 [![Coverage Status](https://coveralls.io/repos/github/jgreener64/ProteinEnsembles.jl/badge.svg?branch=master)](https://coveralls.io/github/jgreener64/ProteinEnsembles.jl?branch=master)
 
-This Julia package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites. The method is described in:
+This [Julia](http://julialang.org/) package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites. The method is described in:
 
 Greener JG, Filippis I and Sternberg MJE, *Manuscript in preparation*
 
 
 ## Summary
 
-Install using `Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")` from within Julia. Run using
+Install using `Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")` from within Julia v0.5. Run using
 
 ```bash
 julia ~/.julia/v0.5/ProteinEnsembles/run.jl \
@@ -31,11 +31,13 @@ Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")
 
 from the Julia REPL. This will also automatically install a few other required Julia packages. If you want you can run the tests using `Pkg.test("ProteinEnsembles")`.
 
+If you wish to use the auto-parameterisation procedure you must also have [TM-score](http://zhanglab.ccmb.med.umich.edu/TM-score) installed (see below).
+
 
 ## Requirements
 
 To use ProteinEnsembles.jl you will need the following:
-- PDB files of the protein of interest. Two is best, but one may be used. They must have polar hydrogens only added; this can be done using utilities such as [pdbtools](https://github.com/harmslab/pdbtools). The chain labelling and residue numbering must be consistent as this is used to find common atoms. Alternative atom locations are discarded. PDB files must also be a single model and not have any inserted residues. HETATM records are discarded by default.
+- PDB files of the protein of interest. Two is best, but one may be used (see the paper). They must have polar hydrogens only added; this can be done using tools such as [Chimera](https://www.cgl.ucsf.edu/chimera) or [pdbtools](https://github.com/harmslab/pdbtools). The chain labelling and residue numbering must be consistent between the files as this is used to find common atoms. Alternative atom locations are discarded. PDB files must also be a single model and not have any inserted residues. HETATM records are discarded by default.
 - DSSP files corresponding to the PDB files above. These can be obtained using [dssp](http://swift.cmbi.ru.nl/gv/dssp).
 
 
@@ -98,4 +100,12 @@ constraints_com, constraints_one, constraints_two = interactions(
 )
 ensemble_com = generateensemble(constraints_com, 50)
 runanalysis("exprose_out", ensemble_com, constraints_one, constraints_two)
+```
+
+The auto-parameterisation procedure can select a more suitable tolerance weighting value (see the paper). [TM-score](http://zhanglab.ccmb.med.umich.edu/TM-score) must be installed to do this. For example:
+
+```bash
+# Run auto-parameterisation procedure; TM-score is run with the command TMscore
+exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
+    --d2 input_2.dssp -o exprose_param -t TMscore
 ```
