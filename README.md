@@ -106,6 +106,8 @@ The auto-parameterisation procedure can select a more suitable tolerance weighti
 
 ```bash
 # Run auto-parameterisation procedure; TM-score is run with the command TMscore
-exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
-    --d2 input_2.dssp -o exprose_param -t TMscore
+julia ~/.julia/v0.5/ProteinEnsembles/param.jl \
+    --i1 input_1.pdb --d1 input_1.dssp \
+    --i2 input_2.pdb --d2 input_2.dssp \
+    -o exprose_param -t TMscore
 ```
