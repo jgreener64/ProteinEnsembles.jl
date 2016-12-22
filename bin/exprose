@@ -1,3 +1,5 @@
+#!/usr/bin/env julia
+
 # Run ExProSE from command line
 
 using ProteinEnsembles
