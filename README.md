@@ -6,7 +6,7 @@
 
 This [Julia](http://julialang.org/) package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites. The method is described in:
 
-Greener JG, Filippis I and Sternberg MJE, *Manuscript in preparation*
+Greener JG, Filippis I and Sternberg MJE, Predicting protein dynamics and allostery using multi-protein atomic distance constraints, *Structure* (Accepted)
 
 
 ## Summary
@@ -14,11 +14,12 @@ Greener JG, Filippis I and Sternberg MJE, *Manuscript in preparation*
 Install using `Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")` from within Julia v0.5. Run using
 
 ```bash
-julia ~/.julia/v0.5/ProteinEnsembles/run.jl \
-    --i1 input_1.pdb --d1 input_1.dssp \
+exprose --i1 input_1.pdb --d1 input_1.dssp \
     --i2 input_2.pdb --d2 input_2.dssp \
     -n 50 -o exprose_out
 ```
+
+where `exprose` is in the `bin` directory.
 
 
 ## Installation
@@ -29,7 +30,7 @@ Julia v0.5 is required and can be downloaded [here](http://julialang.org/downloa
 Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")
 ```
 
-from the Julia REPL. This will also automatically install a few other required Julia packages. If you want you can run the tests using `Pkg.test("ProteinEnsembles")`.
+from the Julia REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `Pkg.test("ProteinEnsembles")`.
 
 If you wish to use the auto-parameterisation procedure you must also have [TM-score](http://zhanglab.ccmb.med.umich.edu/TM-score) installed (see below).
 
@@ -43,16 +44,16 @@ To use ProteinEnsembles.jl you will need the following:
 
 ## Usage
 
-Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The script `run.jl` in the package directory implements this. For example, to see the command line options, run
+Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The `exprose` script in the `bin` directory implements this. For example, to see the command line options run
 
 ```bash
-julia ~/.julia/v0.5/ProteinEnsembles/run.jl -h
+~/.julia/v0.5/ProteinEnsembles/bin/exprose -h
 ```
 
-For easy access to the `run.jl` command you might like to add the following line to your profile, which lets you use `exprose` as a shortcut command:
+For easy access to the `exprose` command you might like to add the following line to your profile:
 
 ```bash
-alias exprose="julia ~/.julia/v0.5/ProteinEnsembles/run.jl"
+export PATH=$PATH:~/.julia/v0.5/ProteinEnsembles/bin
 ```
 
 Then, if all input files are in your current directory, run the program as follows:
@@ -106,8 +107,6 @@ The auto-parameterisation procedure can select a more suitable tolerance weighti
 
 ```bash
 # Run auto-parameterisation procedure; TM-score is run with the command TMscore
-julia ~/.julia/v0.5/ProteinEnsembles/param.jl \
-    --i1 input_1.pdb --d1 input_1.dssp \
-    --i2 input_2.pdb --d2 input_2.dssp \
-    -o exprose_param -t TMscore
+exprose-param --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
+    --d2 input_2.dssp -o exprose_param -t TMscore
 ```
