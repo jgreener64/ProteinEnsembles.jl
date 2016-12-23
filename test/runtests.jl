@@ -2,7 +2,7 @@ using ProteinEnsembles
 using Base.Test
 
 
-testfile(path::AbstractString...) = Pkg.dir("ProteinEnsembles", "test", "test_files", path...)
+testfile(path::AbstractString...) = joinpath(dirname(@__FILE__), "test_files", path...)
 
 
 # Whether to run the parameterisation tests on Linux OSs only
