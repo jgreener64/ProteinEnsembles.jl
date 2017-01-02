@@ -11,7 +11,7 @@ Greener JG, Filippis I and Sternberg MJE, Predicting protein dynamics and allost
 
 ## Summary
 
-Install using `Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")` from within Julia v0.5. Run using
+Install using `Pkg.add("ProteinEnsembles")` from within Julia v0.5. Run using
 
 ```bash
 exprose --i1 input_1.pdb --d1 input_1.dssp \
@@ -27,7 +27,7 @@ where `exprose` is in the `bin` directory.
 Julia v0.5 is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running
 
 ```julia
-Pkg.clone("https://github.com/jgreener64/ProteinEnsembles.jl.git")
+Pkg.add("ProteinEnsembles")
 ```
 
 from the Julia REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `Pkg.test("ProteinEnsembles")`.
