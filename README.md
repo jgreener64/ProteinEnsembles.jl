@@ -110,3 +110,5 @@ The auto-parameterisation procedure can select a more suitable tolerance weighti
 exprose-param --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
     --d2 input_2.dssp -o exprose_param -t TMscore
 ```
+
+The last line of the output gives a suggested tolerance weighting. Use this in a normal `exprose` run as above.
