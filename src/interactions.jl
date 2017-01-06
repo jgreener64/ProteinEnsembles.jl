@@ -553,6 +553,9 @@ function findinteractions(atoms::Array{Atom,1},
     for (k, inter_type) in enumerate(inter_types)
         println("  ", rpad(inter_type, max_length), " - ", inter_counter[k])
     end
+    if inter_counter[12] == 0
+        println("-- NB no H bonds were found - did you remember to add polar hydrogens? --")
+    end
     return inters
 end
 
