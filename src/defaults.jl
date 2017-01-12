@@ -27,5 +27,6 @@ const defaults = Dict{String, Any}(
     "tmscore_path"           => "TMscore",
     "param_tw_start"         => 1.0,
     "param_tw_increment"     => 0.1,
+    "cluster_dist"           => 3.0,
     "exprose_repo_url"       => "https://github.com/jgreener64/ProteinEnsembles.jl",
 )

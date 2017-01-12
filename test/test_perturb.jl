@@ -1,6 +1,10 @@
 # Tests for perturb.jl
 
 
+test_pocket_r_filepath = testfile("1DVM_pocket_r.pdb")
+test_pocket_all_filepath = testfile("1DVM_pocket_all.pdb")
+
+
 @testset "Perturb" begin
     atom_one = Atom("N", "ALA", 'A', 20, [0.0, 0.0, 0.0], "N")
     atom_two = Atom("CA", "ALA", 'A', 20, [0.0, 1.0, 0.0], "C")
@@ -65,4 +69,9 @@
     pock_points = ones(3, 2*defaults["mod_n_points"])
     mod_coords = repeatpocketpoints(pock_points)
     @test mod_coords == ones(3, defaults["mod_n_points"])
+
+
+    temp_filepath = tempname()
+    clusterligsite(test_pocket_r_filepath, test_pocket_all_filepath, temp_filepath)
+    rm(temp_filepath)
 end

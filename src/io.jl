@@ -17,7 +17,10 @@ export
     writeintarray,
     writefloatarray,
     writestringarray,
-    readpocketpoints
+    readpocketpoints,
+    readligsite,
+    readpdblines,
+    writeclusterpoints
 
 
 "Checks if an output filepath is valid, and throws an error if not."
@@ -358,9 +361,11 @@ function readpocketpoints(pdb_filepath::AbstractString)
     expanded_path = expanduser(pdb_filepath)
     @assert isfile(expanded_path) "Not a valid filepath: \"$expanded_path\""
     pock_points = Dict{Int, Array{Float64}}()
+    counter = 0
     open(expanded_path, "r") do pdb_file
         for line in eachline(pdb_file)
             if startswith(line, "ATOM  ") || startswith(line, "HETATM")
+                counter += 1
                 x = float(line[31:38])
                 y = float(line[39:46])
                 z = float(line[47:54])
@@ -373,5 +378,72 @@ function readpocketpoints(pdb_filepath::AbstractString)
             end
         end
     end
+    println("Read ", counter, " pocket points from pocket points PDB file")
     return pock_points
+end
+
+
+"""
+Read a LIGSITEcs PDB output file.
+Returns the pocket centre coordinate list and list of pocket volumes.
+"""
+function readligsite(pdb_filepath::AbstractString)
+    expanded_path = expanduser(pdb_filepath)
+    @assert isfile(expanded_path) "Not a valid filepath: \"$expanded_path\""
+    xs = Float64[]
+    ys = Float64[]
+    zs = Float64[]
+    vols = Int[]
+    counter = 0
+    open(expanded_path, "r") do pdb_file
+        for line in eachline(pdb_file)
+            if startswith(line, "ATOM  ") || startswith(line, "HETATM")
+                counter += 1
+                x = float(line[31:38])
+                y = float(line[39:46])
+                z = float(line[47:54])
+                vol = parse(Int, line[23:26])
+                push!(xs, x)
+                push!(ys, y)
+                push!(zs, z)
+                push!(vols, vol)
+            end
+        end
+    end
+    coords = transpose(hcat(xs, ys, zs))
+    println("Read ", counter, " pocket centres from LIGSITEcs output PDB file")
+    return coords, vols
+end
+
+
+"Read the ATOM lines from a PDB file into an array."
+function readpdblines(pdb_filepath::AbstractString)
+    expanded_path = expanduser(pdb_filepath)
+    @assert isfile(expanded_path) "Not a valid filepath: \"$expanded_path\""
+    point_lines = String[]
+    open(expanded_path, "r") do in_file
+        for line in eachline(in_file)
+            if startswith(line, "ATOM  ")
+                push!(point_lines, line)
+            end
+        end
+    end
+    return point_lines
+end
+
+
+"Write output file with assignment in residue number column"
+function writeclusterpoints{T <: AbstractString}(out_filepath::AbstractString,
+                    point_lines::Array{T,1},
+                    assignments::Array{Int,1})
+    expanded_path = expanduser(out_filepath)
+    checkfilepath(expanded_path)
+    open(expanded_path, "w") do out_file
+        println(out_file, "REMARK    Pocket number in residue number column")
+        println(out_file, "REMARK    Pocket numbers found using cluster-ligsite")
+        for (i, line) in enumerate(point_lines)
+            print(out_file, line[1:22], lpad(string(assignments[i]), 4), line[27:end])
+        end
+    end
+    println("Wrote pocket number assignments to file \"$expanded_path\"")
 end

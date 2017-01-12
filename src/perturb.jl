@@ -3,7 +3,8 @@
 
 export
     repeatpocketpoints,
-    perturbensemble
+    perturbensemble,
+    clusterligsite
 
 
 """
@@ -133,4 +134,80 @@ function perturbensemble(atoms::Array{Atom,1},
         end
     end
     return ensemble_mods
+end
+
+
+"""
+Assign pocket numbers to LIGSITEcs pocket_r.pdb file points.
+Arguments are pocket_r.pdb file, pocket_all.pdb file and new pocket_r.pdb file.
+New file has pocket number in place of residue number.
+Apears to agree largely but not completely with the LIGSITEcs clustering.
+Unassigned points given number 0 and should be fixed manually.
+"""
+function clusterligsite(point_filepath::AbstractString,
+                    centre_filepath::AbstractString,
+                    out_filepath::AbstractString;
+                    cluster_dist::Real=defaults["cluster_dist"])
+    point_lines = readpdblines(point_filepath)
+    n_points = length(point_lines)
+    point_coords = zeros(3, n_points)
+    for (i, line) in enumerate(point_lines)
+        point_coords[1,i] = float(line[31:38])
+        point_coords[2,i] = float(line[39:46])
+        point_coords[3,i] = float(line[47:54])
+    end
+    println("Read ", n_points, " pocket points from LIGSITEcs pocket points PDB file")
+    centre_coords, centre_vols = readligsite(centre_filepath)
+    n_centres = length(centre_vols)
+    assignments = zeros(Int, n_points)
+
+    # Assign points within cluster_dist Angstroms of a centre to belong to the largest pocket centre
+    for p in 1:n_points
+        centre_closest = 0
+        dist_closest = cluster_dist
+        for c in n_centres:-1:1
+            dist = norm(point_coords[:,p] - centre_coords[:,c])
+            if dist <= cluster_dist
+                centre_closest = c
+                dist_closest = dist
+            end
+        end
+        assignments[p] = centre_closest
+    end
+
+    # While some are still unassigned and have not stalled
+    n_unassigned = 2 # Placeholder
+    new_n_unassigned = 1 # Placeholder
+    while new_n_unassigned != n_unassigned && new_n_unassigned > 0
+        n_unassigned = sum(map(x -> x == 0, assignments))
+        for p in 1:n_points
+            # For each unassigned point
+            if assignments[p] == 0
+                point_closest = 0
+                dist_closest = cluster_dist
+                for a in 1:n_points
+                    # Check each assigned point
+                    if assignments[a] > 0
+                        dist = norm(point_coords[:,p] - point_coords[:,a])
+                        # Assign it if it within cluster_dist Angstroms and not already assigned to a larger pocket
+                        if dist <= cluster_dist && (point_closest == 0 || assignments[a] < assignments[point_closest])
+                            point_closest = a
+                            dist_closest = dist
+                        end
+                    end
+                end
+                if point_closest > 0
+                    assignments[p] = assignments[point_closest]
+                end
+            end
+        end
+        new_n_unassigned = sum(map(x -> x == 0, assignments))
+    end
+    if new_n_unassigned > 0
+        println("Could not assign ", new_n_unassigned, " points")
+    else
+        println("Assigned all points")
+    end
+
+    writeclusterpoints(out_filepath, point_lines, assignments)
 end

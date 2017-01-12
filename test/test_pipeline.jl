@@ -11,8 +11,7 @@ test_extra_pdb_2 = testfile("1CFF_2.pdb")
 test_pocket_points = testfile("1CTR_pocket_points.pdb")
 
 
-# Temp directory which is removed at the end
-temp_dir = "$(tempdir())/$(defaults["out_dir"])"
+# Increasing these increases the test run time
 n_strucs = 4
 n_mods = 1
 

@@ -6,6 +6,7 @@ test_dssp_filepath_1 = testfile("4AKE.dssp")
 test_pdb_filepath_2 = testfile("1CTR_H.pdb")
 test_dssp_filepath_2 = testfile("1CTR.dssp")
 test_pocket_points = testfile("1AKE_pocket_points.pdb")
+test_ligsite_filepath = testfile("1DVM_pocket_all.pdb")
 
 
 @testset "IO" begin
@@ -64,4 +65,16 @@ test_pocket_points = testfile("1AKE_pocket_points.pdb")
         42.827  42.827  43.827;
         31.49   32.49   31.49 ;
     ]
+
+
+    coords, vols = readligsite(test_ligsite_filepath)
+    @test size(coords) == (3,43)
+    @test length(vols) == 43
+    @test coords[:,5] == [8.863, 28.126, -27.957]
+    @test vols[5] == 21
+
+
+    lines = readpdblines(test_pdb_filepath_1)
+    @test length(lines) == 3317
+    @test lines[10] == "ATOM     10  CA  ARG A   2      27.437  49.969  37.786  1.00 25.76           C  \n"
 end

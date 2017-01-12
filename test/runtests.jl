@@ -23,6 +23,10 @@ if !linux_only_param_test || is_linux()
 end
 
 
+# Temp directory which is removed at the end
+temp_dir = "$(tempdir())/$(defaults["out_dir"])"
+
+
 include("test_types.jl")
 include("test_atoms.jl")
 include("test_io.jl")

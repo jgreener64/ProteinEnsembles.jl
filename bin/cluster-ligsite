@@ -1,0 +1,7 @@
+#!/usr/bin/env julia
+
+# Assign LIGSITEcs output points to pockets from command line
+
+using ProteinEnsembles
+
+clusterligsite(ARGS[1], ARGS[2], ARGS[3])
