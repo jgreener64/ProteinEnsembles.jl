@@ -351,7 +351,7 @@ end
 
 """
 Read a custom pocket point file in PDB format where the residue number is the pocket number.
-This file can be generated using a script from the LIGSITE-CS pocket_r.pdb and pocket_all.pdb files.
+This file can be generated using a script from the LIGSITEcs pocket_r.pdb and pocket_all.pdb files.
 Returns a dictionary where key is pocket number and value is point coords.
 """
 function readpocketpoints(pdb_filepath::AbstractString)

@@ -12,13 +12,10 @@ export
 using ArgParse
 
 
-const exprose_repo_url = "https://github.com/jgreener64/ProteinEnsembles.jl"
-
-
 "Read arguments from command line for an ExProSE run."
 function parsecommandlinerun()
     s = ArgParseSettings(prog="julia run.jl",
-                    description="Run the ExProSE procedure to generate ensembles of protein structures. See $exprose_repo_url for the ExProSE docs and citation.")
+                    description="Run the ExProSE procedure to generate ensembles of protein structures. See $(defaults["exprose_repo_url"]) for the ExProSE docs and citation.")
     @add_arg_table s begin
         "--i1"
             help = "filepath to the first input PDB file (required)"
@@ -69,7 +66,7 @@ end
 "Read arguments from command line for an ExProSE auto-parameterisation."
 function parsecommandlineparam()
     s = ArgParseSettings(prog="julia param.jl",
-                    description="Run the ExProSE auto-parameterisation procedure. See $exprose_repo_url for the ExProSE docs and citation.")
+                    description="Run the ExProSE auto-parameterisation procedure. See $(defaults["exprose_repo_url"]) for the ExProSE docs and citation.")
     @add_arg_table s begin
         "--i1"
             help = "filepath to the first input PDB file (required)"

@@ -173,10 +173,10 @@ end
 "Dictionary of atomic information for fake modulator atoms."
 const mod_atom_info = Dict{String, Any}(
     "atom_name"=> "X",
-    "res_name"=> "MOD",
-    "chain_id"=> 'X',
-    "res_n"=> 0,
-    "element"=> "X",
+    "res_name" => "MOD",
+    "chain_id" => 'X',
+    "res_n"    => 0,
+    "element"  => "X",
 )
 
 
