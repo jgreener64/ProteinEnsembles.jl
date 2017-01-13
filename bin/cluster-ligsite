@@ -1,6 +1,8 @@
 #!/usr/bin/env julia
 
 # Assign LIGSITEcs output points to pockets from command line
+# Arguments are the pocket point file (pocket_r.pdb), the pocket output file
+#   (pocket_all.pdb) and the new pocket point file with pocket assignments
 
 using ProteinEnsembles
 
