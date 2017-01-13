@@ -125,8 +125,15 @@ runs the auto-parameterisation procedure with the `-t` option specifying the com
 ### Output
 
 The output directory contains the following:
-- The generated structures in PDB format in `pdbs`.
-- The...
+- `pdbs`: generated structures in PDB format. Superimposed to `input_1.pdb` and `input_2.pdb`.
+- `pcs`: Projections onto the principal components of the generated structures, and graphs for the first few principal components.
+- `rmsds`: RMSDs of generated structures to the input structures.
+- `scores`: SPE error scores of generated structures (see paper).
+- `flucs`: RMSF of each residue over the ensemble of generated structures, and a graph of this.
+- `pymol`: PyMol scripts to view principal components on `input_1.pdb` or `input_2.pdb`.
+- `input_1.pdb` and `input_2.pdb`: atoms used in the input structures are written back out and superimposed.
+
+For allosteric site prediction there will also be...
 
 
 ### Reproducing paper results
