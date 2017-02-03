@@ -20,4 +20,4 @@ Instructions to reproduce the ensemble generation results from the paper.
 
     where the tolerance weight is that suggested in the previous step.
 
-5. Examine the files in `rmsds` to see how close the generated structures came to the input structures.
+5. Examine the RMSD files to see how close the generated structures came to the input structures.

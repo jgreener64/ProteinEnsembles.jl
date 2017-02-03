@@ -36,6 +36,8 @@ To use ProteinEnsembles.jl you will need the following:
 
 ## Usage
 
+These instructions are tailored towards Mac/Unix. However they could be modified to work with Windows.
+
 Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The `exprose` script in the `bin` directory implements this. For example, to see the command line options run
 
 ```bash
@@ -100,14 +102,14 @@ To predict allosteric sites you can run [LIGSITEcs](http://projects.biotec.tu-dr
 cluster-ligsite pocket_r.pdb pocket_all.pdb pocket_points.pdb
 ```
 
-Then carry out an `exprose` run with the `pocket_points.pdb` file (`-l`) and the number of pockets (e.g. top 4) to perturb at (`-m`) as parameters:
+where `pocket_r.pdb` and `pocket_all.pdb` are in the LIGSITEcs output. Then carry out an `exprose` run with the `pocket_points.pdb` file (`-l`) and the number of pockets (e.g. top 4) to perturb at (`-m`) as parameters:
 
 ```bash
 exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
     --d2 input_2.dssp -n 50 -o exprose_out -m 4 -l pocket_points.pdb
 ```
 
-View the `predictions.txt` output file to get the order of allosteric pocket predictions. Note other pocket prediction software can be used provided you can get the output into the same format as `pocket_points.pdb`, i.e. pocket cavity points with the pocket number in the residue number column.
+View the `predictions.tsv` output file to get the order of allosteric pocket predictions. Note other pocket prediction software can be used provided you can get the output into the same format as `pocket_points.pdb`, i.e. pocket cavity points with the pocket number in the residue number column.
 
 
 ### Selecting parameters
@@ -125,15 +127,15 @@ runs the auto-parameterisation procedure with the `-t` option specifying the com
 ### Output
 
 The output directory contains the following:
+- `input_1.pdb` and `input_2.pdb`: atoms used from the input structures are written back out and superimposed.
 - `pdbs`: generated structures in PDB format. Superimposed to `input_1.pdb` and `input_2.pdb`.
 - `pcs`: Projections onto the principal components of the generated structures, and graphs for the first few principal components.
-- `rmsds`: RMSDs of generated structures to the input structures.
-- `scores`: SPE error scores of generated structures (see paper).
-- `flucs`: RMSF of each residue over the ensemble of generated structures, and a graph of this.
-- `pymol`: PyMol scripts to view principal components on `input_1.pdb` or `input_2.pdb`.
-- `input_1.pdb` and `input_2.pdb`: atoms used in the input structures are written back out and superimposed.
+- `pymol`: PyMol scripts to view principal components on `input_1.pdb`, e.g. run `pymol input_1.pdb pymol/view_pc_1.pml`.
+- RMSDs of generated structures to the input structures. Line n corresponds to structure n.
+- SPE error scores of generated structures (see paper). Line n corresponds to structure n.
+- RMSFs of each residue over the ensemble of generated structures, and a plot of this. Line n corresponds to residue index n.
 
-For allosteric site prediction there will also be...
+For allosteric site prediction there will be `pdbs_mod_n` and `mod_n` containing similar information for the perturbed ensembles. There will also be the order of allosteric predictions (`predictions.tsv`) and the size of the perturbation on modulating each site (`perturbations.tsv`).
 
 
 ### Reproducing paper results
@@ -143,11 +145,17 @@ The results from the paper can be generated using the instructions in `paper_res
 
 ### Performance
 
-ExProSE can generate 250 structures in ~20 minutes for T4-lysozyme (164 residues) on a 3.1 GHz Intel Core i7 processor. ExProSE cannot currently run on multiple cores but this may be implemented in future.
+ExProSE can generate 250 structures in ~20 minutes for T4-lysozyme (162 residues) on a 3.1 GHz Intel Core i7 processor. ExProSE cannot currently run on multiple cores but this may be implemented in future.
+
+
+## Reporting issues
+
+If you find any bugs in the software or have a comment or feature request, please open an issue on GitHub.
 
 
 ## Notes
 
 - Auto-parameterisation works fine on all OSs but the auto-parameterisation tests are disabled by default on non-Linux systems to make the CI build pass. If you want to run the parameterisation tests on a non-Linux OS, set `linux_only_param_test` in `test/runtests.jl` to `false`.
+- All default values for parameters used in the code can be found in `src/defaults.jl`.
 - Julia utilities to deal with protein structures and PDB files can be found in [Bio.jl](http://biojulia.github.io/Bio.jl/) and [MIToS.jl](http://diegozea.github.io/MIToS.jl/).
 - ExProSE users might also like to try [tCONCOORD](http://wwwuser.gwdg.de/~dseelig/tconcoord.html) and [NMSim](http://cpclab.uni-duesseldorf.de/nmsim/).

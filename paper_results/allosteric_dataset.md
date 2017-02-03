@@ -29,4 +29,4 @@ Instructions to reproduce the allosteric prediction results from the paper.
 
     where the tolerance weight is that suggested in the previous step and `pocket_points.pdb` is from step 4.
 
-7. For each protein view the `predictions.txt` output file to get the order of allosteric pocket predictions.
+7. For each protein view the `predictions.tsv` output file to get the order of allosteric pocket predictions.

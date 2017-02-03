@@ -181,7 +181,7 @@ function runpipeline{T <: AbstractString}(;
     println()
 
     # Make output directories
-    inner_dirs = ["pdbs", "pymol", "flucs", "pcs", "scores", "rmsds"]
+    inner_dirs = ["pdbs", "pymol", "pcs"]
     append!(inner_dirs, ["pdbs_mod_$i" for i in 1:n_mods])
     append!(inner_dirs, ["mod_$i" for i in 1:n_mods])
     makedirectories(out_dir, inner_dirs)
@@ -238,14 +238,14 @@ function runanalysis{T <: AbstractString}(
     # Do PCA and write projections
     pca = PCA(ensemble)
     pcs_ref = projectstructure(constraints.atoms, pca)
-    writeprojections("$out_dir/pcs/pcs.dat", pca.pcs)
-    writeprojections("$out_dir/pcs/pcs_ref.dat", pcs_ref)
-    writefloatarray("$out_dir/pcs/evals_spread.txt", pca.evals / sum(pca.evals))
+    writeprojections("$out_dir/pcs/pcs.tsv", pca.pcs)
+    writeprojections("$out_dir/pcs/pcs_input.tsv", pcs_ref)
+    writefloatarray("$out_dir/pcs/evals_spread.tsv", pca.evals / sum(pca.evals))
 
     # Write PDBs, SPE scores and RMSDs
     writeensemble("$out_dir/pdbs/$out_prefix.pdb", ensemble)
-    writeensemblescores("$out_dir/scores/scores.txt", ensemble)
-    writefloatarray("$out_dir/rmsds/rmsds.txt", ensemblermsds(ensemble, constraints.atoms))
+    writeensemblescores("$out_dir/spe_scores.tsv", ensemble)
+    writefloatarray("$out_dir/rmsds.tsv", ensemblermsds(ensemble, constraints.atoms))
 
     # Plot the PCs
     if length(extra_pdbs) > 0
@@ -256,9 +256,9 @@ function runanalysis{T <: AbstractString}(
     plotpcs("$out_dir/pcs/pc", pca.pcs, pcs_ref_one=pcs_ref, pcs_extra=pcs_extra)
 
     # Write and plot ensemble fluctuations
-    flucs = fluctuations(ensemble)
-    writefloatarray("$out_dir/flucs/flucs.txt", flucs)
-    plotfluctuations("$out_dir/flucs/flucs.png", flucs)
+    rmsfs = fluctuations(ensemble)
+    writefloatarray("$out_dir/rmsfs.tsv", rmsfs)
+    plotfluctuations("$out_dir/rmsfs.png", rmsfs)
 
     # Deal with perturbed ensembles
     av_rmsds = Float64[]
@@ -266,27 +266,28 @@ function runanalysis{T <: AbstractString}(
         alignensemble!(ensemble_mod, ens_al)
         push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), constraints.atoms))
         pcs_mod = projectensemble(ensemble_mod, pca)
-        writeprojections("$out_dir/pcs/pcs_mod_$i.dat", pcs_mod)
         writeensemble("$out_dir/pdbs_mod_$i/$out_prefix.pdb", ensemble_mod)
-        writeensemblescores("$out_dir/scores/scores_mod_$i.txt", ensemble_mod)
+        writeprojections("$out_dir/mod_$i/pcs_mod_$i.tsv", pcs_mod)
+        writeensemblescores("$out_dir/mod_$i/spe_scores_mod_$i.tsv", ensemble_mod)
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
-        writefloatarray("$out_dir/mod_$i/rmsds.txt", ensemblermsds(ensemble_mod, constraints.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_mod_$i.tsv", ensemblermsds(ensemble_mod, constraints.atoms))
         selfalignensemble!(ensemble_mod)
-        flucs_mod = fluctuations(ensemble_mod)
-        writefloatarray("$out_dir/flucs/flucs_mod_$i.txt", flucs_mod)
-        writefloatarray("$out_dir/flucs/fluc_rats_mod_$i.txt", flucs_mod ./ flucs)
-        plotfluctuations("$out_dir/mod_$i/flucs.png", flucs, flucs_mod=flucs_mod)
+        rmsfs_mod = fluctuations(ensemble_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs_mod_$i.tsv", rmsfs_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs_ratio_mod_$i.tsv", rmsfs_mod ./ rmsfs)
+        plotfluctuations("$out_dir/mod_$i/rmsfs_mod_$i.png", rmsfs, flucs_mod=rmsfs_mod)
     end
 
     # Write PyMol scripts to view PCs
-    writepcviews("$out_dir/pymol/pc_", pca, ensemble.atoms, 5)
+    writepcviews("$out_dir/pymol/view_pc_", pca, ensemble.atoms, 5)
 
     # Write input atoms back out
     writepdb("$out_dir/input.pdb", constraints.atoms)
 
     # Write perturbation values
     if length(ensemble_mods) > 0
-        writefloatarray("$out_dir/perturbations.txt", av_rmsds)
+        writefloatarray("$out_dir/perturbations.tsv", av_rmsds)
+        writeintarray("$out_dir/predictions.tsv", sortperm(av_rmsds, rev=true))
     end
 end
 
@@ -309,17 +310,17 @@ function runanalysis{T <: AbstractString}(
     pca = PCA(ensemble_com)
     pcs_ref_one = projectstructure(constraints_one.atoms, pca)
     pcs_ref_two = projectstructure(constraints_two.atoms, pca)
-    writeprojections("$out_dir/pcs/pcs_com.dat", pca.pcs)
-    writeprojections("$out_dir/pcs/pcs_ref_one.dat", pcs_ref_one)
-    writeprojections("$out_dir/pcs/pcs_ref_two.dat", pcs_ref_two)
-    writeintarray("$out_dir/pcs/pcs_ord.txt", findimportantpcs(pcs_ref_one, pcs_ref_two))
-    writefloatarray("$out_dir/pcs/evals_spread.txt", pca.evals / sum(pca.evals))
+    writeprojections("$out_dir/pcs/pcs.tsv", pca.pcs)
+    writeprojections("$out_dir/pcs/pcs_input_1.tsv", pcs_ref_one)
+    writeprojections("$out_dir/pcs/pcs_input_2.tsv", pcs_ref_two)
+    writeintarray("$out_dir/pcs/pcs_input_dist.tsv", findimportantpcs(pcs_ref_one, pcs_ref_two))
+    writefloatarray("$out_dir/pcs/evals_spread.tsv", pca.evals / sum(pca.evals))
 
     # Write PDBs, SPE scores and RMSDs
     writeensemble("$out_dir/pdbs/$out_prefix.pdb", ensemble_com)
-    writeensemblescores("$out_dir/scores/scores.txt", ensemble_com)
-    writefloatarray("$out_dir/rmsds/rmsds_ref_one.txt", ensemblermsds(ensemble_com, constraints_one.atoms))
-    writefloatarray("$out_dir/rmsds/rmsds_ref_two.txt", ensemblermsds(ensemble_com, constraints_two.atoms))
+    writeensemblescores("$out_dir/spe_scores.tsv", ensemble_com)
+    writefloatarray("$out_dir/rmsds_input_1.tsv", ensemblermsds(ensemble_com, constraints_one.atoms))
+    writefloatarray("$out_dir/rmsds_input_2.tsv", ensemblermsds(ensemble_com, constraints_two.atoms))
 
     # Plot the PCs
     if length(extra_pdbs) > 0
@@ -330,9 +331,9 @@ function runanalysis{T <: AbstractString}(
     plotpcs("$out_dir/pcs/pc", pca.pcs, pcs_ref_one=pcs_ref_one, pcs_ref_two=pcs_ref_two, pcs_extra=pcs_extra)
 
     # Write and plot ensemble fluctuations
-    flucs = fluctuations(ensemble_com)
-    writefloatarray("$out_dir/flucs/flucs.txt", flucs)
-    plotfluctuations("$out_dir/flucs/flucs.png", flucs)
+    rmsfs = fluctuations(ensemble_com)
+    writefloatarray("$out_dir/rmsfs.tsv", rmsfs)
+    plotfluctuations("$out_dir/rmsfs.png", rmsfs)
 
     # Deal with perturbed ensembles
     av_rmsds = Float64[]
@@ -340,21 +341,21 @@ function runanalysis{T <: AbstractString}(
         alignensemble!(ensemble_mod, ens_al)
         push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), constraints_one.atoms))
         pcs_mod = projectensemble(ensemble_mod, pca)
-        writeprojections("$out_dir/pcs/pcs_mod_$i.dat", pcs_mod)
         writeensemble("$out_dir/pdbs_mod_$i/$out_prefix.pdb", ensemble_mod)
-        writeensemblescores("$out_dir/scores/scores_mod_$i.txt", ensemble_mod)
+        writeprojections("$out_dir/mod_$i/pcs_mod_$i.tsv", pcs_mod)
+        writeensemblescores("$out_dir/mod_$i/spe_scores_mod_$i.tsv", ensemble_mod)
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref_one, pcs_ref_two=pcs_ref_two, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
-        writefloatarray("$out_dir/mod_$i/rmsds_ref_one.txt", ensemblermsds(ensemble_mod, constraints_one.atoms))
-        writefloatarray("$out_dir/mod_$i/rmsds_ref_two.txt", ensemblermsds(ensemble_mod, constraints_two.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_mod_$(i)_input_1.tsv", ensemblermsds(ensemble_mod, constraints_one.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_mod_$(i)_input_2.tsv", ensemblermsds(ensemble_mod, constraints_two.atoms))
         selfalignensemble!(ensemble_mod)
-        flucs_mod = fluctuations(ensemble_mod)
-        writefloatarray("$out_dir/flucs/flucs_mod_$i.txt", flucs_mod)
-        writefloatarray("$out_dir/flucs/fluc_rats_mod_$i.txt", flucs_mod ./ flucs)
-        plotfluctuations("$out_dir/mod_$i/flucs.png", flucs, flucs_mod=flucs_mod)
+        rmsfs_mod = fluctuations(ensemble_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs_mod_$i.tsv", rmsfs_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs_ratio_mod_$i.tsv", rmsfs_mod ./ rmsfs)
+        plotfluctuations("$out_dir/mod_$i/rmsfs_mod_$i.png", rmsfs, flucs_mod=rmsfs_mod)
     end
 
     # Write PyMol scripts to view PCs
-    writepcviews("$out_dir/pymol/pc_", pca, ensemble_com.atoms, 5)
+    writepcviews("$out_dir/pymol/view_pc_", pca, ensemble_com.atoms, 5)
 
     # Write input atoms back out
     writepdb("$out_dir/input_1.pdb", constraints_one.atoms)
@@ -362,7 +363,8 @@ function runanalysis{T <: AbstractString}(
 
     # Write perturbation values
     if length(ensemble_mods) > 0
-        writefloatarray("$out_dir/perturbations.txt", av_rmsds)
+        writefloatarray("$out_dir/perturbations.tsv", av_rmsds)
+        writeintarray("$out_dir/predictions.tsv", sortperm(av_rmsds, rev=true))
     end
 end
 
@@ -407,6 +409,7 @@ function parampipeline(;
     makedirectories(out_dir)
     found = false
     fracs = Float64[]
+    suggested = 0.0
     for tw in param_tw_start:-param_tw_increment:0.0
         println("Running with tolerance weight of ", tw)
         constraints_com, constraints_one, constraints_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, tolerance_weight=tw)
@@ -424,7 +427,9 @@ function parampipeline(;
         push!(fracs, frac)
         if frac >= frac_between
             println("Fraction is at least threshold of ", frac_between)
-            println("Suggested tolerance weight is ", tw)
+            println("Suggested tolerance weight is:")
+            println(tw)
+            suggested = tw
             found = true
             break
         else
@@ -434,10 +439,12 @@ function parampipeline(;
     end
     if !found
         println("Tolerance weight cannot be reduced any further")
-        println("Suggested tolerance weight is 0.0")
+        println("Suggested tolerance weight is:")
+        println(0.0)
     end
     tws = collect(param_tw_start:-param_tw_increment:0.0)
     lines = ["$(tws[i])\t$frac" for (i, frac) in enumerate(fracs)]
-    writestringarray("$out_dir/fractions.txt", lines)
+    writestringarray("$out_dir/fractions.tsv", lines)
+    writestringarray("$out_dir/suggested.tsv", [string(suggested)])
     println("Done")
 end

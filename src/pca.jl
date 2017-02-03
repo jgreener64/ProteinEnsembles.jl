@@ -161,7 +161,7 @@ function projectpdbfiles{T <: AbstractString}(out_prefix::AbstractString,
     pcs_all = Float64[]
     for (i, pdb_filepath) in enumerate(pdb_filepaths)
         pcs = projectpdbfile(pdb_filepath, atoms_ref, ens_al, pca)
-        writeprojections("$(out_prefix)$i.dat", pcs)
+        writeprojections("$(out_prefix)$i.tsv", pcs)
         if length(pcs_all) > 0
             pcs_all = hcat(pcs_all, pcs)
         else
