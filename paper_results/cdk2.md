@@ -11,4 +11,6 @@ Instructions to reproduce the CDK2 results from the paper.
         -o exprose_out -n 250 -w 0.3 -m 8 -l 3PXF_pocket_points.pdb
     ```
 
-    where `3PXF_pocket_points.pdb` is included in this directory, or can be generated manually after running LIGSITEcs on 3PXF.
+    where `3PXF_pocket_points.pdb` is included in this directory, or can be generated manually using `cluster-ligsite` after running LIGSITEcs on 3PXF.
+
+4. Compare the principal components analysis plots for each site.

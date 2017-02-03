@@ -1,6 +1,6 @@
 Instructions to reproduce the allosteric prediction results from the paper.
 
-1. Download the apo and holo PDB files from `datasets/allosteric_dataset.tsv` and retain the chains listed.
+1. Download the apo and holo PDB files from `datasets/allosteric_dataset.tsv` and retain the chains listed. Add polar hydrogens.
 
 2. Obtain DSSP files for the above PDB files.
 

@@ -10,3 +10,5 @@ Instructions to reproduce the T4-lysozyme results from the paper.
     exprose --i1 169L.pdb --d1 169L.dssp --i2 2LZM.pdb --d2 2LZM.dssp \
         -o exprose_out -n 250 -w 0.2
     ```
+
+4. Generated structures are then projected onto a separate principal components analysis of existing crystal structures (see paper).

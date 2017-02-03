@@ -1,6 +1,6 @@
 Instructions to reproduce the ensemble generation results from the paper.
 
-1. Download the apo and holo PDB files from `datasets/ensemble_dataset.tsv`.
+1. Download the apo and holo PDB files from `datasets/ensemble_dataset.tsv`. Add polar hydrogens.
 
 2. Obtain DSSP files for the above PDB files.
 
@@ -19,3 +19,5 @@ Instructions to reproduce the ensemble generation results from the paper.
     ```
 
     where the tolerance weight is that suggested in the previous step.
+
+5. Examine the files in `rmsds` to see how close the generated structures came to the input structures.
