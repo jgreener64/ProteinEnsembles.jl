@@ -36,7 +36,7 @@ To use ProteinEnsembles.jl you will need the following:
 
 ## Usage
 
-These instructions are tailored towards Mac/Unix. However they could be modified to work with Windows.
+These instructions are tailored towards Mac/Unix. However they could be modified to work on Windows.
 
 Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The `exprose` script in the `bin` directory implements this. For example, to see the command line options run
 
@@ -53,7 +53,7 @@ export PATH=$PATH:~/.julia/v0.5/ProteinEnsembles/bin
 Then, if all input files are in your current directory, run the program as follows:
 
 ```bash
-# Generate an ensemble of 50 structures with an output directory ake_out
+# Generate an ensemble of 50 structures with an output directory exprose_out
 exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
     --d2 input_2.dssp -n 50 -o exprose_out
 
@@ -94,24 +94,6 @@ runanalysis("exprose_out", ensemble_com, constraints_one, constraints_two)
 ```
 
 
-### Allosteric site prediction
-
-To predict allosteric sites you can run [LIGSITEcs](http://projects.biotec.tu-dresden.de/pocket/download.html) on the *second* input structure (the one you give as `--i2`). You then need to run the `cluster-ligsite` script in `bin` to assign the points to pockets:
-
-```bash
-cluster-ligsite pocket_r.pdb pocket_all.pdb pocket_points.pdb
-```
-
-where `pocket_r.pdb` and `pocket_all.pdb` are in the LIGSITEcs output. Then carry out an `exprose` run with the `pocket_points.pdb` file (`-l`) and the number of pockets (e.g. top 4) to perturb at (`-m`) as parameters:
-
-```bash
-exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
-    --d2 input_2.dssp -n 50 -o exprose_out -m 4 -l pocket_points.pdb
-```
-
-View the `predictions.tsv` output file to get the order of allosteric pocket predictions. Note other pocket prediction software can be used provided you can get the output into the same format as `pocket_points.pdb`, i.e. pocket cavity points with the pocket number in the residue number column.
-
-
 ### Selecting parameters
 
 The auto-parameterisation procedure can select a more suitable tolerance weighting value (see the paper). [TM-score](http://zhanglab.ccmb.med.umich.edu/TM-score) must be installed to do this. For example:
@@ -122,6 +104,24 @@ exprose-param --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
 ```
 
 runs the auto-parameterisation procedure with the `-t` option specifying the command to run TM-score. The last line of the output gives a suggested tolerance weighting. Use this value in a normal `exprose` run as above.
+
+
+### Allosteric site prediction
+
+To predict allosteric sites you should run [LIGSITEcs](http://projects.biotec.tu-dresden.de/pocket/download.html) on the *second* input structure (the one you give as `--i2`). You then need to run the `cluster-ligsite` script in `bin` to assign the points to pockets:
+
+```bash
+cluster-ligsite pocket_r.pdb pocket_all.pdb pocket_points.pdb
+```
+
+where `pocket_r.pdb` and `pocket_all.pdb` are in the LIGSITEcs output. Then carry out an `exprose` run with the `pocket_points.pdb` file (`-l`) and the number of pockets (e.g. top 4) to perturb at (`-m`) as parameters:
+
+```bash
+exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
+    --d2 input_2.dssp -n 50 -o exprose_out -l pocket_points.pdb -m 4
+```
+
+A tolerance weighting from an auto-parameterisation run can also be used here. View the `predictions.tsv` output file to get the order of allosteric pocket predictions. Note that other pocket prediction software can be used provided you can get the output into the same format as `pocket_points.pdb`, i.e. pocket cavity points with the pocket number in the residue number column.
 
 
 ### Output
@@ -135,7 +135,7 @@ The output directory contains the following:
 - SPE error scores of generated structures (see paper). Line n corresponds to structure n.
 - RMSFs of each residue over the ensemble of generated structures, and a plot of this. Line n corresponds to residue index n.
 
-For allosteric site prediction there will be `pdbs_mod_n` and `mod_n` containing similar information for the perturbed ensembles. There will also be the order of allosteric predictions (`predictions.tsv`) and the size of the perturbation on modulating each site (`perturbations.tsv`).
+For allosteric site prediction there will be `pdbs_mod_n` and `mod_n` containing similar information for the perturbed ensembles. There will also be the order of allosteric predictions (`predictions.tsv`) and the size of the perturbation on modulating each site (`perturbations.tsv`), which is the RMSD between the centroid structure of the perturbed and unperturbed ensembles.
 
 
 ### Reproducing paper results
@@ -155,7 +155,7 @@ If you find any bugs in the software or have a comment or feature request, pleas
 
 ## Notes
 
+- All default values for parameters used in the code can be found and modified in `src/defaults.jl`.
 - Auto-parameterisation works fine on all OSs but the auto-parameterisation tests are disabled by default on non-Linux systems to make the CI build pass. If you want to run the parameterisation tests on a non-Linux OS, set `linux_only_param_test` in `test/runtests.jl` to `false`.
-- All default values for parameters used in the code can be found in `src/defaults.jl`.
 - Julia utilities to deal with protein structures and PDB files can be found in [Bio.jl](http://biojulia.github.io/Bio.jl/) and [MIToS.jl](http://diegozea.github.io/MIToS.jl/).
 - ExProSE users might also like to try [tCONCOORD](http://wwwuser.gwdg.de/~dseelig/tconcoord.html) and [NMSim](http://cpclab.uni-duesseldorf.de/nmsim/).
