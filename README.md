@@ -103,7 +103,7 @@ exprose-param --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
     --d2 input_2.dssp -o exprose_param -t TMscore
 ```
 
-runs the auto-parameterisation procedure with the `-t` option specifying the command to run TM-score. The last line of the output gives a suggested tolerance weighting. Use this value in a normal `exprose` run as above.
+runs the auto-parameterisation procedure with the `-t` option specifying the command to run TM-score. The last line of the output gives a suggested tolerance weighting. This value is also written out to `suggested.tsv`. Use this value in a normal `exprose` run as above.
 
 
 ### Allosteric site prediction
@@ -129,13 +129,15 @@ A tolerance weighting from an auto-parameterisation run can also be used here. V
 The output directory contains the following:
 - `input_1.pdb` and `input_2.pdb`: atoms used from the input structures are written back out and superimposed.
 - `pdbs`: generated structures in PDB format. Superimposed to `input_1.pdb` and `input_2.pdb`.
-- `pcs`: Projections onto the principal components of the generated structures, and graphs for the first few principal components.
-- `pymol`: PyMol scripts to view principal components on `input_1.pdb`, e.g. run `pymol input_1.pdb pymol/view_pc_1.pml`.
-- RMSDs of generated structures to the input structures. Line n corresponds to structure n.
-- SPE error scores of generated structures (see paper). Line n corresponds to structure n.
-- RMSFs of each residue over the ensemble of generated structures, and a plot of this. Line n corresponds to residue index n.
+- `pcs`: projections onto the principal components (PCs) of the principal component analysis of the generated structures. Contains files for generated (`pcs.tsv`) and input structures (`pcs_input_1.tsv` and `pcs_input_2.tsv`) - line n corresponds to structure n and column c corresponds to PC c. Has graphs of these for the first few PCs (`pc_x_y.png`). Also includes a list of PCs ordered by decreasing distance betwen the input structures (`pcs_input_dist.tsv`) and the percentage variation explained by each PC (`evals_spread.tsv`).
+- `pymol`: [PyMol](https://www.pymol.org/) scripts to view PCs on `input_1.pdb`, e.g. run `pymol input_1.pdb pymol/view_pc_1.pml`.
+- `rmsds_input_1.tsv` and `rmsds_input_2.tsv`: RMSDs of generated structures to the input structures. Line n corresponds to structure n.
+- `spe_scores.tsv`: SPE error scores of generated structures (see paper). Line n corresponds to structure n.
+- `rmsfs.tsv` and `rmsfs.png`: RMSFs of each residue over the ensemble of generated structures, and a plot of this. Line n corresponds to residue index n.
 
-For allosteric site prediction there will be `pdbs_mod_n` and `mod_n` containing similar information for the perturbed ensembles. There will also be the order of allosteric predictions (`predictions.tsv`) and the size of the perturbation on modulating each site (`perturbations.tsv`), which is the RMSD between the centroid structure of the perturbed and unperturbed ensembles.
+The default plot colours are blue for generated structures, red for input structure 1, green for input structure 2 and orange for perturbed ensemble structures.
+
+For allosteric site prediction there will be `pdbs_mod_n` and `mod_n` containing similar information for each perturbed ensemble, and the ratio of RMSF values to the unperturbed ensemble (`rmsfs_ratio.tsv`). There will also be the order of allosteric predictions (`predictions.tsv`) and the size of the perturbation on modulating each site (`perturbations.tsv`), which is the RMSD between the centroid structure of the perturbed and unperturbed ensembles.
 
 
 ### Reproducing paper results

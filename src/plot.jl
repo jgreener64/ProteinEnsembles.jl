@@ -10,6 +10,16 @@ using Gadfly
 using Colors
 
 
+"Dictionary of default colours for plotting."
+const default_colours = Dict{String, String}(
+    "exprose"=> "#3498DB", # Blue
+    "input_1"=> "#E74C3C", # Red
+    "input_2"=> "#2ECC71", # Green
+    "mod"    => "#FF9900", # Orange
+    "extra"  => "#000000", # Black
+)
+
+
 "`Theme` for plots."
 plottheme() = Theme(
     background_color=colorant"white",
@@ -47,16 +57,16 @@ function plotpcs(out_prefix::AbstractString,
             x=pcs[i,:],
             y=pcs[j,:],
             Geom.point,
-            pointtheme("red"),
+            pointtheme(default_colours["exprose"]),
         )
-        pcsaddlayer!(layers, pcs_ref_one, (i, j), "blue")
-        pcsaddlayer!(layers, pcs_ref_two, (i, j), "green")
-        pcsaddlayer!(layers, pcs_mod, (i, j), "cyan")
-        pcsaddlayer!(layers, pcs_extra, (i, j), "black")
+        pcsaddlayer!(layers, pcs_ref_one, (i, j), default_colours["input_1"])
+        pcsaddlayer!(layers, pcs_ref_two, (i, j), default_colours["input_2"])
+        pcsaddlayer!(layers, pcs_mod, (i, j), default_colours["mod"])
+        pcsaddlayer!(layers, pcs_extra, (i, j), default_colours["extra"])
         p = plot(
             layers...,
-            Guide.xlabel("PC $i / Angstroms"),
-            Guide.ylabel("PC $j / Angstroms"),
+            Guide.xlabel("PC $i / Å"),
+            Guide.ylabel("PC $j / Å"),
             plottheme,
         )
         draw(PNG(out_filepath, 20cm, 20cm), p)
@@ -94,7 +104,7 @@ function plotfluctuations(out_filepath::AbstractString,
         x=collect(1:n_res),
         y=flucs,
         Geom.line,
-        pointtheme("red"),
+        pointtheme(default_colours["exprose"]),
     )
     if length(flucs_mod) > 0
         @assert length(flucs_mod) == n_res "Number of fluctuations differ"
@@ -102,13 +112,13 @@ function plotfluctuations(out_filepath::AbstractString,
             x=collect(1:n_res),
             y=flucs_mod,
             Geom.line,
-            pointtheme("cyan"),
+            pointtheme(default_colours["mod"]),
         )[1])
     end
     p = plot(
         layers...,
         Guide.xlabel("Residue index"),
-        Guide.ylabel("Mean square fluctuation / Angstroms"),
+        Guide.ylabel("Mean square fluctuation / Å"),
         plottheme,
     )
     draw(PNG(out_filepath, 20cm, 15cm), p)

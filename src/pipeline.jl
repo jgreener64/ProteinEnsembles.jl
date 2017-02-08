@@ -267,15 +267,15 @@ function runanalysis{T <: AbstractString}(
         push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), constraints.atoms))
         pcs_mod = projectensemble(ensemble_mod, pca)
         writeensemble("$out_dir/pdbs_mod_$i/$out_prefix.pdb", ensemble_mod)
-        writeprojections("$out_dir/mod_$i/pcs_mod_$i.tsv", pcs_mod)
-        writeensemblescores("$out_dir/mod_$i/spe_scores_mod_$i.tsv", ensemble_mod)
+        writeprojections("$out_dir/mod_$i/pcs.tsv", pcs_mod)
+        writeensemblescores("$out_dir/mod_$i/spe_scores.tsv", ensemble_mod)
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
-        writefloatarray("$out_dir/mod_$i/rmsds_mod_$i.tsv", ensemblermsds(ensemble_mod, constraints.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds.tsv", ensemblermsds(ensemble_mod, constraints.atoms))
         selfalignensemble!(ensemble_mod)
         rmsfs_mod = fluctuations(ensemble_mod)
-        writefloatarray("$out_dir/mod_$i/rmsfs_mod_$i.tsv", rmsfs_mod)
-        writefloatarray("$out_dir/mod_$i/rmsfs_ratio_mod_$i.tsv", rmsfs_mod ./ rmsfs)
-        plotfluctuations("$out_dir/mod_$i/rmsfs_mod_$i.png", rmsfs, flucs_mod=rmsfs_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs.tsv", rmsfs_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs_ratio.tsv", rmsfs_mod ./ rmsfs)
+        plotfluctuations("$out_dir/mod_$i/rmsfs.png", rmsfs, flucs_mod=rmsfs_mod)
     end
 
     # Write PyMol scripts to view PCs
@@ -342,16 +342,16 @@ function runanalysis{T <: AbstractString}(
         push!(av_rmsds, rmsd(ens_av, centroid(ensemble_mod), constraints_one.atoms))
         pcs_mod = projectensemble(ensemble_mod, pca)
         writeensemble("$out_dir/pdbs_mod_$i/$out_prefix.pdb", ensemble_mod)
-        writeprojections("$out_dir/mod_$i/pcs_mod_$i.tsv", pcs_mod)
-        writeensemblescores("$out_dir/mod_$i/spe_scores_mod_$i.tsv", ensemble_mod)
+        writeprojections("$out_dir/mod_$i/pcs.tsv", pcs_mod)
+        writeensemblescores("$out_dir/mod_$i/spe_scores.tsv", ensemble_mod)
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref_one, pcs_ref_two=pcs_ref_two, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
-        writefloatarray("$out_dir/mod_$i/rmsds_mod_$(i)_input_1.tsv", ensemblermsds(ensemble_mod, constraints_one.atoms))
-        writefloatarray("$out_dir/mod_$i/rmsds_mod_$(i)_input_2.tsv", ensemblermsds(ensemble_mod, constraints_two.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_input_1.tsv", ensemblermsds(ensemble_mod, constraints_one.atoms))
+        writefloatarray("$out_dir/mod_$i/rmsds_input_2.tsv", ensemblermsds(ensemble_mod, constraints_two.atoms))
         selfalignensemble!(ensemble_mod)
         rmsfs_mod = fluctuations(ensemble_mod)
-        writefloatarray("$out_dir/mod_$i/rmsfs_mod_$i.tsv", rmsfs_mod)
-        writefloatarray("$out_dir/mod_$i/rmsfs_ratio_mod_$i.tsv", rmsfs_mod ./ rmsfs)
-        plotfluctuations("$out_dir/mod_$i/rmsfs_mod_$i.png", rmsfs, flucs_mod=rmsfs_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs.tsv", rmsfs_mod)
+        writefloatarray("$out_dir/mod_$i/rmsfs_ratio.tsv", rmsfs_mod ./ rmsfs)
+        plotfluctuations("$out_dir/mod_$i/rmsfs.png", rmsfs, flucs_mod=rmsfs_mod)
     end
 
     # Write PyMol scripts to view PCs
@@ -427,8 +427,6 @@ function parampipeline(;
         push!(fracs, frac)
         if frac >= frac_between
             println("Fraction is at least threshold of ", frac_between)
-            println("Suggested tolerance weight is:")
-            println(tw)
             suggested = tw
             found = true
             break
@@ -439,12 +437,10 @@ function parampipeline(;
     end
     if !found
         println("Tolerance weight cannot be reduced any further")
-        println("Suggested tolerance weight is:")
-        println(0.0)
     end
     tws = collect(param_tw_start:-param_tw_increment:0.0)
     lines = ["$(tws[i])\t$frac" for (i, frac) in enumerate(fracs)]
     writestringarray("$out_dir/fractions.tsv", lines)
     writestringarray("$out_dir/suggested.tsv", [string(suggested)])
-    println("Done")
+    println("Done. Suggested tolerance weight is:\n$suggested")
 end

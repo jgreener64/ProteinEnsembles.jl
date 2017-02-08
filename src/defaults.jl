@@ -1,7 +1,7 @@
 export defaults
 
 
-"Dictionary of default arguments."
+"Dictionary of default values for parameters."
 const defaults = Dict{String, Any}(
     "out_dir"                => "exprose_out",
     "n_strucs"               => 250,
