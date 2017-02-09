@@ -24,9 +24,9 @@ Instructions to reproduce the allosteric prediction results from the paper.
     ```bash
     exprose --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \
         --d2 input_2.dssp -o exprose_param -w [tolerance_weight] \
-        -m 8 -l pocket_points.pdb
+        -l pocket_points.pdb -m 8
     ```
 
     where the tolerance weight is that suggested in the previous step and `pocket_points.pdb` is from step 4.
 
-7. For each protein view the `predictions.tsv` output file to get the order of allosteric pocket predictions.
+7. For each protein, view the `predictions.tsv` output file to get the order of allosteric pocket predictions.

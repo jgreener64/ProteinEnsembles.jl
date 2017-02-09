@@ -6,7 +6,7 @@
 
 This [Julia](http://julialang.org/) package implements the ExProSE algorithm that takes two protein structures and generates an ensemble of protein structures. The ensembles span conformational space and can be used to predict allosteric sites. The method is described in:
 
-Greener JG, Filippis I and Sternberg MJE, Predicting protein dynamics and allostery using multi-protein atomic distance constraints, *Structure* (Accepted)
+Greener JG, Filippis I and Sternberg MJE, Predicting protein dynamics and allostery using multi-protein atomic distance constraints, *Structure*, 2017, 25. [Link to paper](http://www.cell.com/structure/fulltext/S0969-2126(17)30008-4).
 
 
 ## Summary
