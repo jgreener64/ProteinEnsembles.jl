@@ -65,8 +65,8 @@ function plotpcs(out_prefix::AbstractString,
         pcsaddlayer!(layers, pcs_extra, (i, j), default_colours["extra"])
         p = plot(
             layers...,
-            Guide.xlabel("PC $i / Å"),
-            Guide.ylabel("PC $j / Å"),
+            Guide.xlabel("Projections onto PC $i / Å"),
+            Guide.ylabel("Projections onto PC $j / Å"),
             plottheme,
         )
         draw(PNG(out_filepath, 20cm, 20cm), p)
@@ -91,7 +91,7 @@ end
 
 
 """
-Plot mean square fluctuations of an aligned ensemble.
+Plot root mean square fluctuations of an aligned ensemble.
 Arguments are the output filepath and the array of fluctuations.
 """
 function plotfluctuations(out_filepath::AbstractString,
@@ -118,9 +118,9 @@ function plotfluctuations(out_filepath::AbstractString,
     p = plot(
         layers...,
         Guide.xlabel("Residue index"),
-        Guide.ylabel("Mean square fluctuation / Å"),
+        Guide.ylabel("RMSF / Å"),
         plottheme,
     )
     draw(PNG(out_filepath, 20cm, 15cm), p)
-    println("Plotted fluctuations to file \"$out_filepath\"")
+    println("Plotted RMSFs to file \"$out_filepath\"")
 end

@@ -256,7 +256,7 @@ function runanalysis{T <: AbstractString}(
     plotpcs("$out_dir/pcs/pc", pca.pcs, pcs_ref_one=pcs_ref, pcs_extra=pcs_extra)
 
     # Write and plot ensemble fluctuations
-    rmsfs = fluctuations(ensemble)
+    rmsfs = sqrt(fluctuations(ensemble))
     writefloatarray("$out_dir/rmsfs.tsv", rmsfs)
     plotfluctuations("$out_dir/rmsfs.png", rmsfs)
 
@@ -272,7 +272,7 @@ function runanalysis{T <: AbstractString}(
         plotpcs("$out_dir/mod_$i/pc", pca.pcs, pcs_ref_one=pcs_ref, pcs_mod=pcs_mod, pcs_extra=pcs_extra)
         writefloatarray("$out_dir/mod_$i/rmsds.tsv", ensemblermsds(ensemble_mod, constraints.atoms))
         selfalignensemble!(ensemble_mod)
-        rmsfs_mod = fluctuations(ensemble_mod)
+        rmsfs_mod = sqrt(fluctuations(ensemble_mod))
         writefloatarray("$out_dir/mod_$i/rmsfs.tsv", rmsfs_mod)
         writefloatarray("$out_dir/mod_$i/rmsfs_ratio.tsv", rmsfs_mod ./ rmsfs)
         plotfluctuations("$out_dir/mod_$i/rmsfs.png", rmsfs, flucs_mod=rmsfs_mod)
@@ -331,7 +331,7 @@ function runanalysis{T <: AbstractString}(
     plotpcs("$out_dir/pcs/pc", pca.pcs, pcs_ref_one=pcs_ref_one, pcs_ref_two=pcs_ref_two, pcs_extra=pcs_extra)
 
     # Write and plot ensemble fluctuations
-    rmsfs = fluctuations(ensemble_com)
+    rmsfs = sqrt(fluctuations(ensemble_com))
     writefloatarray("$out_dir/rmsfs.tsv", rmsfs)
     plotfluctuations("$out_dir/rmsfs.png", rmsfs)
 
@@ -348,7 +348,7 @@ function runanalysis{T <: AbstractString}(
         writefloatarray("$out_dir/mod_$i/rmsds_input_1.tsv", ensemblermsds(ensemble_mod, constraints_one.atoms))
         writefloatarray("$out_dir/mod_$i/rmsds_input_2.tsv", ensemblermsds(ensemble_mod, constraints_two.atoms))
         selfalignensemble!(ensemble_mod)
-        rmsfs_mod = fluctuations(ensemble_mod)
+        rmsfs_mod = sqrt(fluctuations(ensemble_mod))
         writefloatarray("$out_dir/mod_$i/rmsfs.tsv", rmsfs_mod)
         writefloatarray("$out_dir/mod_$i/rmsfs_ratio.tsv", rmsfs_mod ./ rmsfs)
         plotfluctuations("$out_dir/mod_$i/rmsfs.png", rmsfs, flucs_mod=rmsfs_mod)
