@@ -45,7 +45,7 @@ function displacements(coords_one::Array{Float64}, coords_two::Array{Float64})
     @assert n_coords > 0 "The coordinate arrays are empty"
     diff = coords_one - coords_two
     sq_diff = diff .* diff
-    dists = sqrt(sum(sq_diff, 1))
+    dists = sqrt.(sum(sq_diff, 1))
     return dists[:]
 end
 

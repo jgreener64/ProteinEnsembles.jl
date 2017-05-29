@@ -206,7 +206,7 @@ such that the first represents the largest difference between the two structures
 function findimportantpcs(pcs_one::Array{Float64}, pcs_two::Array{Float64})
     @assert size(pcs_one) == size(pcs_two) "PC arrays have different sizes"
     @assert size(pcs_one, 2) == 1 "Each set of projections should be of one structure"
-    diff = abs(pcs_one - pcs_two)
+    diff = abs.(pcs_one - pcs_two)
     pc_ord = sortperm(diff[:], rev=true)
     return pc_ord
 end
