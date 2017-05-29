@@ -76,5 +76,5 @@ test_ligsite_filepath = testfile("1DVM_pocket_all.pdb")
 
     lines = readpdblines(test_pdb_filepath_1)
     @test length(lines) == 3317
-    @test lines[10] == "ATOM     10  CA  ARG A   2      27.437  49.969  37.786  1.00 25.76           C  \n"
+    @test lines[10] == "ATOM     10  CA  ARG A   2      27.437  49.969  37.786  1.00 25.76           C  "
 end
