@@ -424,7 +424,7 @@ function readpdblines(pdb_filepath::AbstractString)
     open(expanded_path, "r") do in_file
         for line in eachline(in_file)
             if startswith(line, "ATOM  ")
-                push!(point_lines, line)
+                push!(point_lines, chomp(line))
             end
         end
     end
