@@ -1,59 +1,59 @@
-Protein name	Apo PDB	Holo PDB	Apo chains	Holo chains	N	ExProSE	PARS	STRESS	AlloPred	LIGSITEcs	Fpocket
-Pyruvate kinase	1A3X	1A3W	AB	AB	955	1	1	0	0	0	1
-Antithrombin-III	1ANT	3KCG	I	I	399	0	0	0	0	0	0
-HIV-1 integrase	1BIZ	4CHO	AB	AB	276	0	1	0	0	0	0
-Chorismate mutase	1CSM	2CSM	AB	2 x A	490	0	0	0	1	0	1
-Plasminogen activator inhibitor 1	1DB2	4AQH	A	A	377	0	1	0	1	1	1
-HTH-type transcriptional repressor purR	1DBQ	1JH9	AB	2 x A	550	1	0	0	0	0	0
-Ribose-phosphate pyrophosphokinase	1DKR	1DKU	AB	AB	588	1	0	1	0	1	0
-Fatty acid metabolism regulator protein	1E2X	1H9G	2 x A	2 x A	444	0	0	0	1	1	1
-Androgen receptor	1E3G	4K7A	A	A	242	0	0	0	0	0	0
-Herpesvirus protease	1FL1	4P3H	A	A	153	0	1	0	1	1	1
-Glutamate receptor 2	1FTO	3ILT	A	B	257	0	0	1	0	0	0
-Annexin A5	1HVG	1HAK	A	A	313	0	0	0	1	1	0
-"Neurolysin, mitochondrial"	1I1I	4FXY	P	P	664	0	0	0	0	0	1
-Cell division control protein 4	1NEX	3MKS	AB	CD	572	1	0	0	1	0	1
-Phospho-2-dehydro-3-deoxyheptonate aldolase	1OFP	1OFR	AB	GH	628	0	0	0	1	0	1
-Organophosphorus hydrolase	1PTA	1QW7	2 x A	AB	636	0	0	0	0	0	0
-Ribonucleotide reductase	1RLR	3UUS	A	A	727	1	1	0	0	1	0
-Cytochrome P450 3A4	1W0E	1W0F	A	A	452	0	0	0	0	0	0
-Acetyl-CoA carboxylase	1W93	1W96	A	A	549	1	0	1	1	0	1
-Hypothetical biotin--[acetyl-CoA-carboxylase] ligase	1WQ7	2DVE	AB	AB	456	1	1	1	1	1	1
-Putative uncharacterized protein PH0207	1X0M	3ATH	A	A	403	1	1	1	1	1	1
-Integrin alpha-L	1ZON	1RD4	A	A	181	1	1	-	1	1	1
-Pyruvate dehydrogenase kinase isoform 2	2BTZ	2BU2	2 x A	2 x A	708	0	0	0	0	0	0
-Farnesyl pyrophosphate synthase	2F7M	3N45	2 x F	2 x F	682	1	1	0	0	1	0
-"Fructose-1,6-bisphosphatase"	2FBP	1Q9D	AB	AB	630	0	0	1	0	0	0
-Protein arginine N-methyltransferase 3	2FYT	3SMQ	A	A	299	0	1	1	0	1	1
-Glycogen phosphorylase	2GPN	1PYG	A	A	787	1	0	0	0	0	0
-Glutamate racemase	2JFX	4B1F	AB	AB	498	0	0	0	0	0	0
-Myosin-2 heavy chain	2JJ9	2JHR	A	A	692	1	1	1	1	1	1
-Ubiquitin-conjugating enzyme E2 R1	2OB4	3RZ3	A	A	153	1	1	-	1	1	1
-Cytosolic purine 5'-nucleotidase	2XCX	2JC9	2 x A	2 x A	916	1	0	0	0	1	0
-cAMP receptor protein	3D0S	3I54	AB	AB	422	1	1	1	1	1	1
-Endothelial PAS domain-containing protein 1	3F1P	3H82	AB	AB	222	0	1	0	1	1	1
-Acetylcholinesterase	3GEL	2J3Q	A	A	527	0	0	0	1	1	1
-"NAD-dependent deacetylase sirtuin-3, mitochondrial"	3GLU	4C7B	AB	AB	261	1	0	1	1	1	1
-FimX	3HV9	3HV8	A	A	242	1	1	1	1	1	1
-Glucokinase	3IDH	4ISE	A	A	419	0	0	0	1	1	1
-"Glutamate receptor ionotropic, NMDA 2B"	3JPW	3QEL	A	B	349	0	0	0	0	0	0
-Global nitrogen regulator	3LA7	3LA3	AB	AB	382	0	0	1	0	0	0
-Genome polyprotein	3MWV	4JTZ	A	A	559	0	0	0	0	0	0
-Beta-lactamase SHV-1	3N4I	1VM1	A	A	265	1	1	0	1	1	1
-DNA double-strand break repair Rad50 ATPase	3QG5	3THO	A	A	349	0	0	0	0	0	0
-N-acetylglutamate kinase / N-acetylglutamate synthase	3S7Y	4KZT	AX	AX	862	0	0	1	0	0	0
-Leucine transporter	3TU0	2QEI	A	A	509	1	1	0	1	1	1
-6-phosphofructokinase isozyme 2	3UMP	3CQD	AB	AB	612	1	1	1	0	1	0
-Kinesin-like protein KIF11	4A28	4BXN	A	A	330	1	1	1	1	1	1
-Eukaryotic translation initiation factor 4E	4BEA	4TQC	A	A	174	0	0	-	0	0	0
-Penicillin binding protein 2 prime	4BL2	3ZG0	A	A	636	0	1	0	0	0	0
-CAMP-dependent protein kinase	4DFY	4DFX	A	E	311	1	1	0	0	1	1
-Casein kinase II	4DGL	3H30	C	A	333	1	0	0	1	0	1
-Mitogen-activated protein kinase 14	4E5B	3NNX	A	A	321	1	0	0	1	1	1
-PelD	4ETX	4ETZ	A	A	285	0	0	1	0	0	0
-Caspase 7	4FDL	4FEA	AB	AB	365	0	1	1	0	1	0
-Glucose-1-phosphate thymidylyltransferase	4HO0	4HO9	A	A	285	1	1	0	0	1	0
-GTPase Kras	4LPK	4LUC	A	A	156	1	1	-	1	1	1
-CRP transcriptional dual regulator	4N9H	4N9I	AB	AB	402	1	1	1	1	1	1
-2-C-methyl-D-erythritol 4-phosphate cytidylyltransferase	4NAI	2YC3	2 x A	2 x A	428	0	0	0	0	0	1
-Adenylate cyclase type 10	4OYW	4USW	A	A	458	0	0	0	0	1	1
+Protein name    Apo PDB Holo PDB    Modulator ID(s)    Apo chains  Holo chains N   ExProSE PARS    STRESS  AlloPred    LIGSITEcs   Fpocket
+Pyruvate kinase 1A3X    1A3W    FBP AB  AB  955 1   1   0   0   0   1
+Antithrombin-III    1ANT    3KCG    NTP I   I   399 0   0   0   0   0   0
+HIV-1 integrase 1BIZ    4CHO    U2Z AB  AB  276 0   1   0   0   0   0
+Chorismate mutase   1CSM    2CSM    TYR AB  2 x A   490 0   0   0   1   0   1
+Plasminogen activator inhibitor 1   1DB2    4AQH    TB7 A   A   377 0   1   0   1   1   1
+HTH-type transcriptional repressor purR 1DBQ    1JH9    HPA AB  2 x A   550 1   0   0   0   0   0
+Ribose-phosphate pyrophosphokinase  1DKR    1DKU    AP2 AB  AB  588 1   0   1   0   1   0
+Fatty acid metabolism regulator protein 1E2X    1H9G    COA,MYR 2 x A   2 x A   444 0   0   0   1   1   1
+Androgen receptor   1E3G    4K7A    MXD A   A   242 0   0   0   0   0   0
+Herpesvirus protease    1FL1    4P3H    25G A   A   153 0   1   0   1   1   1
+Glutamate receptor 2    1FTO    3ILT    TRU A   B   257 0   0   1   0   0   0
+Annexin A5  1HVG    1HAK    K21 A   A   313 0   0   0   1   1   0
+Neurolysin, mitochondrial   1I1I    4FXY    0W2 P   P   664 0   0   0   0   0   1
+Cell division control protein 4 1NEX    3MKS    C1C AB  CD  572 1   0   0   1   0   1
+Phospho-2-dehydro-3-deoxyheptonate aldolase 1OFP    1OFR    PHE AB  GH  628 0   0   0   1   0   1
+Organophosphorus hydrolase  1PTA    1QW7    EBP 2 x A   AB  636 0   0   0   0   0   0
+Ribonucleotide reductase    1RLR    3UUS    DTP A   A   727 1   1   0   0   1   0
+Cytochrome P450 3A4 1W0E    1W0F    STR A   A   452 0   0   0   0   0   0
+Acetyl-CoA carboxylase  1W93    1W96    S1A A   A   549 1   0   1   1   0   1
+Hypothetical biotin--[acetyl-CoA-carboxylase] ligase    1WQ7    2DVE    BT5 AB  AB  456 1   1   1   1   1   1
+Putative uncharacterized protein PH0207 1X0M    3ATH    AKG A   A   403 1   1   1   1   1   1
+Integrin alpha-L    1ZON    1RD4    L08 A   A   181 1   1   -   1   1   1
+Pyruvate dehydrogenase kinase isoform 2 2BTZ    2BU2    TF1 2 x A   2 x A   708 0   0   0   0   0   0
+Farnesyl pyrophosphate synthase 2F7M    3N45    3N3 2 x F   2 x F   682 1   1   0   0   1   0
+Fructose-1,6-bisphosphatase 2FBP    1Q9D    OI1 AB  AB  630 0   0   1   0   0   0
+Protein arginine N-methyltransferase 3  2FYT    3SMQ    TDU A   A   299 0   1   1   0   1   1
+Glycogen phosphorylase  2GPN    1PYG    AMP A   A   787 1   0   0   0   0   0
+Glutamate racemase  2JFX    4B1F    KRH AB  AB  498 0   0   0   0   0   0
+Myosin-2 heavy chain    2JJ9    2JHR    PBQ A   A   692 1   1   1   1   1   1
+Ubiquitin-conjugating enzyme E2 R1  2OB4    3RZ3    U94 A   A   153 1   1   -   1   1   1
+Cytosolic purine 5'-nucleotidase    2XCX    2JC9    AND 2 x A   2 x A   916 1   0   0   0   1   0
+cAMP receptor protein   3D0S    3I54    CMP AB  AB  422 1   1   1   1   1   1
+Endothelial PAS domain-containing protein 1 3F1P    3H82    020 AB  AB  222 0   1   0   1   1   1
+Acetylcholinesterase    3GEL    2J3Q    TFL A   A   527 0   0   0   1   1   1
+NAD-dependent deacetylase sirtuin-3, mitochondrial  3GLU    4C7B    BVB AB  AB  261 1   0   1   1   1   1
+FimX    3HV9    3HV8    C2E A   A   242 1   1   1   1   1   1
+Glucokinase 3IDH    4ISE    1FW A   A   419 0   0   0   1   1   1
+Glutamate receptor ionotropic, NMDA 2B  3JPW    3QEL    QEL A   B   349 0   0   0   0   0   0
+Global nitrogen regulator   3LA7    3LA3    2FT AB  AB  382 0   0   1   0   0   0
+Genome polyprotein  3MWV    4JTZ    1NW A   A   559 0   0   0   0   0   0
+Beta-lactamase SHV-1    3N4I    1VM1    MA4 A   A   265 1   1   0   1   1   1
+DNA double-strand break repair Rad50 ATPase 3QG5    3THO    ADP A   A   349 0   0   0   0   0   0
+N-acetylglutamate kinase / N-acetylglutamate synthase   3S7Y    4KZT    ARG AX  AX  862 0   0   1   0   0   0
+Leucine transporter 3TU0    2QEI    CXX A   A   509 1   1   0   1   1   1
+6-phosphofructokinase isozyme 2 3UMP    3CQD    ATP AB  AB  612 1   1   1   0   1   0
+Kinesin-like protein KIF11  4A28    4BXN    6LX A   A   330 1   1   1   1   1   1
+Eukaryotic translation initiation factor 4E 4BEA    4TQC    34J A   A   174 0   0   -   0   0   0
+Penicillin binding protein 2 prime  4BL2    3ZG0    1W8 A   A   636 0   1   0   0   0   0
+CAMP-dependent protein kinase   4DFY    4DFX    MYR A   E   311 1   1   0   0   1   1
+Casein kinase II    4DGL    3H30    RFZ C   A   333 1   0   0   1   0   1
+Mitogen-activated protein kinase 14 4E5B    3NNX    EDD A   A   321 1   0   0   1   1   1
+PelD    4ETX    4ETZ    C2E A   A   285 0   0   1   0   0   0
+Caspase 7   4FDL    4FEA    0TE AB  AB  365 0   1   1   0   1   0
+Glucose-1-phosphate thymidylyltransferase   4HO0    4HO9    UTP A   A   285 1   1   0   0   1   0
+GTPase Kras 4LPK    4LUC    20G A   A   156 1   1   -   1   1   1
+CRP transcriptional dual regulator  4N9H    4N9I    PCG AB  AB  402 1   1   1   1   1   1
+2-C-methyl-D-erythritol 4-phosphate cytidylyltransferase    4NAI    2YC3    MW5 2 x A   2 x A   428 0   0   0   0   0   1
+Adenylate cyclase type 10   4OYW    4USW    ACT A   A   458 0   0   0   0   1   1
