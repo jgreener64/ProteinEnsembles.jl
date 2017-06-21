@@ -9,7 +9,8 @@ julia:
   - nightly
 matrix:
   allow_failures:
-    - julia: nightly 
+    - julia: 0.5 # This times out and breaks the build but is tested on AppVeyor
+    - julia: nightly
 notifications:
   email: false
 before_install:

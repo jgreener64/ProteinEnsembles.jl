@@ -41,13 +41,13 @@ These instructions are tailored towards Mac/Unix. However they could be modified
 Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The `exprose` script in the `bin` directory implements this. For example, to see the command line options run
 
 ```bash
-~/.julia/v0.5/ProteinEnsembles/bin/exprose -h
+~/.julia/v0.6/ProteinEnsembles/bin/exprose -h
 ```
 
 For easy access to the `exprose` command you might like to add the following line to your profile:
 
 ```bash
-export PATH=$PATH:~/.julia/v0.5/ProteinEnsembles/bin
+export PATH=$PATH:~/.julia/v0.6/ProteinEnsembles/bin
 ```
 
 Then, if all input files are in your current directory, run the program as follows:
