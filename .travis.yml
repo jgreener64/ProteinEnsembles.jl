@@ -15,7 +15,7 @@ notifications:
   email: false
 before_install:
   - if [ `uname` = "Linux" ]; then
-      curl http://zhanglab.ccmb.med.umich.edu/TM-score/TMscore.gz | gunzip > TMscore;
+      curl https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore.gz | gunzip > TMscore;
       chmod +x TMscore;
       export PATH=$PATH:$(pwd);
     fi

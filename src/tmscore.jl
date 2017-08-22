@@ -1,4 +1,4 @@
-# Run TMscore from command line - see http://zhanglab.ccmb.med.umich.edu/TM-score
+# Run TMscore from command line - see https://zhanglab.ccmb.med.umich.edu/TM-score
 
 
 export
@@ -9,7 +9,7 @@ export
 
 """
 TM-score of model and reference, given as filepaths.
-Uses external command line program - see http://zhanglab.ccmb.med.umich.edu/TM-score.
+Uses external command line program - see https://zhanglab.ccmb.med.umich.edu/TM-score.
 """
 function tmscore(model::AbstractString,
                     reference::AbstractString;

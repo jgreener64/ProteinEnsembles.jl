@@ -24,7 +24,7 @@ where `exprose` is in the `bin` directory.
 
 ## Installation
 
-Julia v0.5 or v0.6 is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running `Pkg.add("ProteinEnsembles")` from the Julia REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `Pkg.test("ProteinEnsembles")`. If you wish to use the auto-parameterisation procedure (see below) you must also have [TM-score](http://zhanglab.ccmb.med.umich.edu/TM-score) installed.
+Julia v0.5 or v0.6 is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running `Pkg.add("ProteinEnsembles")` from the Julia REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `Pkg.test("ProteinEnsembles")`. If you wish to use the auto-parameterisation procedure (see below) you must also have [TM-score](https://zhanglab.ccmb.med.umich.edu/TM-score) installed.
 
 
 ## Requirements
@@ -96,7 +96,7 @@ runanalysis("exprose_out", ensemble_com, constraints_one, constraints_two)
 
 ### Selecting parameters
 
-The auto-parameterisation procedure can select a more suitable tolerance weighting value (see the paper). [TM-score](http://zhanglab.ccmb.med.umich.edu/TM-score) must be installed to do this. For example:
+The auto-parameterisation procedure can select a more suitable tolerance weighting value (see the paper). [TM-score](https://zhanglab.ccmb.med.umich.edu/TM-score) must be installed to do this. For example:
 
 ```bash
 exprose-param --i1 input_1.pdb --d1 input_1.dssp --i2 input_2.pdb \

@@ -101,7 +101,7 @@ function parsecommandlineparam()
             arg_type = Float64
             default = defaults["frac_between"]
         "--tmscore", "-t"
-            help = "executable to run TMscore, see http://zhanglab.ccmb.med.umich.edu/TM-score"
+            help = "executable to run TMscore, see https://zhanglab.ccmb.med.umich.edu/TM-score"
             arg_type = AbstractString
             default = defaults["tmscore_path"]
     end
