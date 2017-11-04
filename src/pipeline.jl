@@ -144,7 +144,7 @@ end
 
 
 "Wrapper function to run the whole pipeline."
-function runpipeline{T <: AbstractString}(;
+function runpipeline(;
                     i1::Union{AbstractString, Void}=nothing,
                     d1::Union{AbstractString, Void}=nothing,
                     i2::Union{AbstractString, Void}=nothing,
@@ -155,7 +155,7 @@ function runpipeline{T <: AbstractString}(;
                     other_ratio::Real=defaults["other_ratio"],
                     extra_pdbs::Array{T,1}=String[],
                     mod_path::Union{AbstractString, Void}=nothing,
-                    n_mods::Integer=0)
+                    n_mods::Integer=0) where {T <: AbstractString}
     @assert i1 != nothing && d1 != nothing "Arguments i1 and d1 required"
 
     # Print inputs
@@ -223,13 +223,12 @@ end
 
 
 "Run the analysis pipeline and write output files."
-function runanalysis{T <: AbstractString}(
-                    out_dir::AbstractString,
+function runanalysis(out_dir::AbstractString,
                     ensemble::ModelledEnsemble,
                     constraints::Constraints;
                     extra_pdbs::Array{T,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
-                    out_prefix::AbstractString=defaults["out_prefix"])
+                    out_prefix::AbstractString=defaults["out_prefix"]) where {T <: AbstractString}
     # Align ensemble
     ens_al = selfalignensemble!(ensemble)
     alignatoms!(constraints.atoms, ens_al)
@@ -292,14 +291,13 @@ function runanalysis{T <: AbstractString}(
 end
 
 
-function runanalysis{T <: AbstractString}(
-                    out_dir::AbstractString,
+function runanalysis(out_dir::AbstractString,
                     ensemble_com::ModelledEnsemble,
                     constraints_one::Constraints,
                     constraints_two::Constraints;
                     extra_pdbs::Array{T,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
-                    out_prefix::AbstractString=defaults["out_prefix"])
+                    out_prefix::AbstractString=defaults["out_prefix"]) where {T <: AbstractString}
     # Align ensemble
     ens_al = selfalignensemble!(ensemble_com)
     alignatoms!(constraints_one.atoms, ens_al)

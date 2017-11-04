@@ -341,7 +341,7 @@ end
 
 
 "Write an array of strings to an output file."
-function writestringarray{T <: AbstractString}(out_filepath::AbstractString, vals::Array{T,1})
+function writestringarray(out_filepath::AbstractString, vals::Array{T,1}) where {T <: AbstractString}
     expanded_path = expanduser(out_filepath)
     checkfilepath(expanded_path)
     open(expanded_path, "w") do out_file
@@ -433,9 +433,9 @@ end
 
 
 "Write output file with assignment in residue number column"
-function writeclusterpoints{T <: AbstractString}(out_filepath::AbstractString,
+function writeclusterpoints(out_filepath::AbstractString,
                     point_lines::Array{T,1},
-                    assignments::Array{Int,1})
+                    assignments::Array{Int,1}) where {T <: AbstractString}
     expanded_path = expanduser(out_filepath)
     checkfilepath(expanded_path)
     open(expanded_path, "w") do out_file
