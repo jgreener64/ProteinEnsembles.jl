@@ -11,7 +11,7 @@ export
 
 
 "A pair of atoms with a covalent bond between them in the standard amino acids."
-type BondedPair
+mutable struct BondedPair
     residue::String
     atom_one::String
     atom_two::String
@@ -23,7 +23,7 @@ end
 
 
 "An atom from a PDB format file."
-type Atom
+mutable struct Atom
     atom_name::String
     res_name::String
     chain_id::Char
@@ -43,7 +43,7 @@ end
 
 
 "Information about the lower and upper distance constraints between atoms."
-type Constraints
+mutable struct Constraints
     atoms::Array{Atom,1}
     lower::Array{Float64,1} # List of lower constraints by present index
     upper::Array{Float64,1} # List of upper constraints by present index
@@ -56,7 +56,7 @@ end
 
 
 "A set of coordinates and a score."
-type ModelledStructure
+mutable struct ModelledStructure
     score::Float64 # This is sometimes set as a placeholder of -1.0 to mean no score
     coords::Array{Float64}
 end
@@ -67,7 +67,7 @@ end
 
 
 "A group of modelled structures."
-type ModelledEnsemble
+mutable struct ModelledEnsemble
     atoms::Array{Atom,1}
     strucs::Array{ModelledStructure,1}
 end
@@ -81,7 +81,7 @@ end
 
 
 "The results of a principal components analysis, sorted with highest eigenvalue first."
-type PCA
+mutable struct PCA
     evals::Array{Float64}
     evecs::Array{Float64}
     av_coords::Array{Float64} # Average C-alpha coordinates
