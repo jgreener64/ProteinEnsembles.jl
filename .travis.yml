@@ -4,12 +4,10 @@ os:
   - linux
   - osx
 julia:
-  - 0.5
   - 0.6
   - nightly
 matrix:
   allow_failures:
-    - julia: 0.5 # This times out and breaks the build but is tested on AppVeyor
     - julia: nightly
 notifications:
   email: false
