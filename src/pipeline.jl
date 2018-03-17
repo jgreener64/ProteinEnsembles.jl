@@ -153,9 +153,9 @@ function runpipeline(;
                     n_strucs::Integer=defaults["n_strucs"],
                     tolerance_weight::Real=defaults["tolerance_weight"],
                     other_ratio::Real=defaults["other_ratio"],
-                    extra_pdbs::Array{T,1}=String[],
+                    extra_pdbs::Array{<:AbstractString,1}=String[],
                     mod_path::Union{AbstractString, Void}=nothing,
-                    n_mods::Integer=0) where {T <: AbstractString}
+                    n_mods::Integer=0)
     @assert i1 != nothing && d1 != nothing "Arguments i1 and d1 required"
 
     # Print inputs
@@ -226,9 +226,9 @@ end
 function runanalysis(out_dir::AbstractString,
                     ensemble::ModelledEnsemble,
                     constraints::Constraints;
-                    extra_pdbs::Array{T,1}=String[],
+                    extra_pdbs::Array{<:AbstractString,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
-                    out_prefix::AbstractString=defaults["out_prefix"]) where {T <: AbstractString}
+                    out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
     ens_al = selfalignensemble!(ensemble)
     alignatoms!(constraints.atoms, ens_al)
@@ -295,9 +295,9 @@ function runanalysis(out_dir::AbstractString,
                     ensemble_com::ModelledEnsemble,
                     constraints_one::Constraints,
                     constraints_two::Constraints;
-                    extra_pdbs::Array{T,1}=String[],
+                    extra_pdbs::Array{<:AbstractString,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
-                    out_prefix::AbstractString=defaults["out_prefix"]) where {T <: AbstractString}
+                    out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
     ens_al = selfalignensemble!(ensemble_com)
     alignatoms!(constraints_one.atoms, ens_al)

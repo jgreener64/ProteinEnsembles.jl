@@ -152,10 +152,10 @@ end
 
 "Wrapper function for projectpdbfile to project multiple PDBs and write the output."
 function projectpdbfiles(out_prefix::AbstractString,
-                    pdb_filepaths::Array{T,1},
+                    pdb_filepaths::Array{<:AbstractString,1},
                     atoms_ref::Array{Atom,1},
                     ens_al::Array{Float64},
-                    pca::PCA) where {T <: AbstractString}
+                    pca::PCA)
     checkfilepath(out_prefix)
     @assert length(pdb_filepaths) > 0 "No entries in pdb_filepaths"
     pcs_all = Float64[]
