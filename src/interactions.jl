@@ -549,7 +549,7 @@ function findinteractions(atoms::Array{Atom,1},
         end
     end
     println("Found interactions:")
-    max_length = maximum(map(length, inter_types))
+    max_length = maximum(length.(inter_types))
     for (k, inter_type) in enumerate(inter_types)
         println("  ", rpad(inter_type, max_length), " - ", inter_counter[k])
     end

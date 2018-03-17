@@ -179,7 +179,7 @@ function clusterligsite(point_filepath::AbstractString,
     n_unassigned = 2 # Placeholder
     new_n_unassigned = 1 # Placeholder
     while new_n_unassigned != n_unassigned && new_n_unassigned > 0
-        n_unassigned = sum(map(x -> x == 0, assignments))
+        n_unassigned = sum(x -> x == 0, assignments)
         for p in 1:n_points
             # For each unassigned point
             if assignments[p] == 0
@@ -201,7 +201,7 @@ function clusterligsite(point_filepath::AbstractString,
                 end
             end
         end
-        new_n_unassigned = sum(map(x -> x == 0, assignments))
+        new_n_unassigned = sum(x -> x == 0, assignments)
     end
     if new_n_unassigned > 0
         println("Could not assign ", new_n_unassigned, " points")
