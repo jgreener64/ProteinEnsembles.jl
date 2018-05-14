@@ -152,7 +152,7 @@ ExProSE can generate 250 structures in ~20 minutes for T4-lysozyme (162 residues
 
 ## Reporting issues
 
-If you find any bugs in the software or have a comment or feature request, please open an issue on GitHub.
+If you find any bugs in the software or have a comment or feature request, please open an issue on GitHub or email Joe Greener (j.greener at ucl.ac.uk).
 
 
 ## Notes
