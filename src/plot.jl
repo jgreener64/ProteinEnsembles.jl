@@ -34,7 +34,7 @@ plottheme() = Theme(
 
 "`Theme` for plot points."
 pointtheme(colour::AbstractString) = Theme(
-    default_color=parse(Colorant, colour),
+    default_color=Meta.parse(Colorant, colour),
     point_size=1.5mm,
     highlight_width=0mm,
 )

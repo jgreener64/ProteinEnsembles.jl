@@ -75,7 +75,7 @@ n_mods = 1
 end
 
 
-if !linux_only_param_test || is_linux()
+if !linux_only_param_test || Sys.islinux()
 
 @testset "Parameterisation" begin
     # Auto-parameterisation pipeline

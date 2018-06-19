@@ -1,5 +1,5 @@
 using ProteinEnsembles
-using Base.Test
+using Test
 
 
 testfile(path::AbstractString...) = joinpath(dirname(@__FILE__), "test_files", path...)

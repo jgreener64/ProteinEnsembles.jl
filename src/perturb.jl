@@ -116,7 +116,7 @@ Use pocket points to generate additional constraints.
 function perturbensemble(atoms::Array{Atom,1},
                     constraints::Constraints,
                     n_strucs::Integer,
-                    mod_path::Union{AbstractString, Void},
+                    mod_path::Union{AbstractString, Nothing},
                     n_mods::Integer)
     ensemble_mods = ModelledEnsemble[]
     if n_mods > 0 && mod_path != nothing

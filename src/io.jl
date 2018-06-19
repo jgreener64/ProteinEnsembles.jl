@@ -96,7 +96,7 @@ function readpdb(in_filepath::AbstractString; hetatm::Bool=false)
                 # Chain character is column 22
                 chain_id = line[22]
                 # Residue number integer is columns 23-26 converted to an integer
-                res_n = parse(Int, line[23:26])
+                res_n = Meta.parse(Int, line[23:26])
                 # x, y and z coordinates are columns 31-38, 39-46 and 47-54 respectively converted to floats
                 x = float(line[31:38])
                 y = float(line[39:46])
@@ -239,7 +239,7 @@ function writeensemblescores(out_filepath::AbstractString, ensemble::ModelledEns
     @assert length(strucs) > 0 "The ensemble does not contain any structures"
     open(expanded_path, "w") do out_file
         for struc in strucs
-            println(out_file, round(struc.score, 1))
+            println(out_file, round(struc.score, digits=1))
         end
     end
     println("Wrote ensemble scores to file \"$expanded_path\"")
@@ -285,8 +285,8 @@ function writepcview(out_filepath::AbstractString,
         println(out_file, "set dash_color, ", line_colour)
         for (i, j) in enumerate(inds_to_use)
             pc_coords = atoms[j].coords + disps[3i-2:3i] * weighting
-            println(out_file, "pseudoatom pt", 2i-1, ", pos=[", round(atoms[j].coords[1], 2), ", ", round(atoms[j].coords[2], 2), ", ", round(atoms[j].coords[3], 2), "]")
-            println(out_file, "pseudoatom pt", 2i, ", pos=[", round(pc_coords[1], 2), ", ", round(pc_coords[2], 2), ", ", round(pc_coords[3], 2), "]")
+            println(out_file, "pseudoatom pt", 2i-1, ", pos=[", round(atoms[j].coords[1], digits=2), ", ", round(atoms[j].coords[2], digits=2), ", ", round(atoms[j].coords[3], digits=2), "]")
+            println(out_file, "pseudoatom pt", 2i, ", pos=[", round(pc_coords[1], digits=2), ", ", round(pc_coords[2], digits=2), ", ", round(pc_coords[3], digits=2), "]")
             println(out_file, "distance dist", i, ", /pt", 2i-1, ", /pt", 2i)
         end
         println(out_file, "hide everything, pt*")
@@ -334,7 +334,7 @@ function writefloatarray(out_filepath::AbstractString, vals::Array{Float64,1}; d
     checkfilepath(expanded_path)
     open(expanded_path, "w") do out_file
         for val in vals
-            println(out_file, round(val, dec_places))
+            println(out_file, round(val, digits=dec_places))
         end
     end
 end
@@ -369,7 +369,7 @@ function readpocketpoints(pdb_filepath::AbstractString)
                 x = float(line[31:38])
                 y = float(line[39:46])
                 z = float(line[47:54])
-                pocket_n = parse(Int, line[23:26])
+                pocket_n = Meta.parse(Int, line[23:26])
                 if haskey(pock_points, pocket_n)
                     pock_points[pocket_n] = hcat(pock_points[pocket_n], [x, y, z])
                 else
@@ -402,7 +402,7 @@ function readligsite(pdb_filepath::AbstractString)
                 x = float(line[31:38])
                 y = float(line[39:46])
                 z = float(line[47:54])
-                vol = parse(Int, line[23:26])
+                vol = Meta.parse(Int, line[23:26])
                 push!(xs, x)
                 push!(ys, y)
                 push!(zs, z)

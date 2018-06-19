@@ -601,9 +601,9 @@ function Constraints(atoms::Array{Atom,1},
                         "\t",
                         atomid(atoms[j]),
                         "\t",
-                        round(constraint_lower, 3),
+                        round(constraint_lower, digits=3),
                         "\t",
-                        round(constraint_upper, 3)
+                        round(constraint_upper, digits=3)
                     )
                     constraint_lower = constraint_upper
                 end
@@ -665,9 +665,9 @@ function Constraints(atoms::Array{Atom,1},
                         "\t",
                         atomid(atoms[j]),
                         "\t",
-                        round(constraint_lower, 3),
+                        round(constraint_lower, digits=3),
                         "\t",
-                        round(constraint_upper, 3)
+                        round(constraint_upper, digits=3)
                     )
                     constraint_lower = constraint_upper
                 end

@@ -62,7 +62,7 @@ mutable struct ModelledStructure
 end
 
 function Base.show(io::IO, struc::ModelledStructure)
-    println(io, "Modelled structure with score ", round(struc.score, 1), " and a ", size(struc.coords), " coordinate array")
+    println(io, "Modelled structure with score ", round(struc.score, digits=1), " and a ", size(struc.coords), " coordinate array")
 end
 
 
