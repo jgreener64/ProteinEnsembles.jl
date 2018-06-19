@@ -96,7 +96,7 @@ function readpdb(in_filepath::AbstractString; hetatm::Bool=false)
                 # Chain character is column 22
                 chain_id = line[22]
                 # Residue number integer is columns 23-26 converted to an integer
-                res_n = Meta.parse(Int, line[23:26])
+                res_n = parse(Int, line[23:26])
                 # x, y and z coordinates are columns 31-38, 39-46 and 47-54 respectively converted to floats
                 x = float(line[31:38])
                 y = float(line[39:46])
@@ -369,7 +369,7 @@ function readpocketpoints(pdb_filepath::AbstractString)
                 x = float(line[31:38])
                 y = float(line[39:46])
                 z = float(line[47:54])
-                pocket_n = Meta.parse(Int, line[23:26])
+                pocket_n = parse(Int, line[23:26])
                 if haskey(pock_points, pocket_n)
                     pock_points[pocket_n] = hcat(pock_points[pocket_n], [x, y, z])
                 else
@@ -402,7 +402,7 @@ function readligsite(pdb_filepath::AbstractString)
                 x = float(line[31:38])
                 y = float(line[39:46])
                 z = float(line[47:54])
-                vol = Meta.parse(Int, line[23:26])
+                vol = parse(Int, line[23:26])
                 push!(xs, x)
                 push!(ys, y)
                 push!(zs, z)

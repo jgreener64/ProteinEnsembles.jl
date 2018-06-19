@@ -35,8 +35,8 @@ function fillconstraints(constraints::Constraints;
     n_atoms = length(constraints.atoms)
     # Work out n_cycles and n_steps using n_atoms, iters_per_atom and the ratio of steps to cycles
     n_cycs_steps = n_atoms * iters_per_atom
-    n_cycles = round(Int, digits=sqrt(n_cycs_steps / cyc_step_ratio))
-    n_steps = round(Int, digits=sqrt(n_cycs_steps * cyc_step_ratio))
+    n_cycles = round(Int, sqrt(n_cycs_steps / cyc_step_ratio))
+    n_steps = round(Int, sqrt(n_cycs_steps * cyc_step_ratio))
     # Randomise atomic coordinates in a cube
     coords = rand!(zeros(3, n_atoms)) * box_size
     n_constraints = length(present_i)
@@ -217,7 +217,7 @@ function generateensemble(constraints::Constraints,
     @assert n_constraints > 0 "There are no constraints present"
     @assert discard_ratio >= 1.0 "discard_ratio must be >= 1"
     ensemble = ModelledEnsemble(atoms)
-    n_strucs_init = round(Int, digits=ceil(n_strucs * discard_ratio))
+    n_strucs_init = round(Int, ceil(n_strucs * discard_ratio))
     println("Will generate ", n_strucs_init, " structures and keep best-scoring ", n_strucs)
     p = Progress(n_strucs_init, 1, "Progress: ", 50)
     for struc_n in 1:n_strucs_init
