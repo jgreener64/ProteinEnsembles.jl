@@ -34,11 +34,11 @@ function PCA(ensemble::ModelledEnsemble)
     end
     cov /= n_strucs
     # Find the eigendecomposition
-    eig = eigfact(cov)
+    eig = eigen(cov)
     # Number of non-zero eigenvalues is limited by number of structures
     n_non_zero = min(3*n_to_use-6, n_strucs-1)
     # Reverse the values in order to put the most important PCs first
-    pca = PCA(reverse(eig[:values])[1:n_non_zero], eig[:vectors][:, end:-1:1][:, 1:n_non_zero], av_to_use)
+    pca = PCA(reverse(eig.values)[1:n_non_zero], eig.vectors[:, end:-1:1][:, 1:n_non_zero], av_to_use)
     # Project each structure onto the PCs to get the principal coordinates
     pca.pcs = projectensemble(ensemble, pca)
     return pca
@@ -192,7 +192,7 @@ function fluctuations(ensemble::ModelledEnsemble)
     av_to_use = getindex(av_coords, collect(1:3), inds_to_use)
     for struc in strucs
         disps = (getindex(struc.coords, collect(1:3), inds_to_use) - av_to_use)
-        flucs += sum(disps .* disps, 1)
+        flucs += sum(disps .* disps, dims=1)
     end
     flucs /= n_strucs
     return flucs[:]

@@ -145,16 +145,16 @@ end
 
 "Wrapper function to run the whole pipeline."
 function runpipeline(;
-                    i1::Union{AbstractString, Void}=nothing,
-                    d1::Union{AbstractString, Void}=nothing,
-                    i2::Union{AbstractString, Void}=nothing,
-                    d2::Union{AbstractString, Void}=nothing,
+                    i1::Union{AbstractString, Nothing}=nothing,
+                    d1::Union{AbstractString, Nothing}=nothing,
+                    i2::Union{AbstractString, Nothing}=nothing,
+                    d2::Union{AbstractString, Nothing}=nothing,
                     out_dir::AbstractString=defaults["out_dir"],
                     n_strucs::Integer=defaults["n_strucs"],
                     tolerance_weight::Real=defaults["tolerance_weight"],
                     other_ratio::Real=defaults["other_ratio"],
                     extra_pdbs::Array{<:AbstractString,1}=String[],
-                    mod_path::Union{AbstractString, Void}=nothing,
+                    mod_path::Union{AbstractString, Nothing}=nothing,
                     n_mods::Integer=0)
     @assert i1 != nothing && d1 != nothing "Arguments i1 and d1 required"
 
@@ -369,10 +369,10 @@ end
 
 "Run the auto-parameterisation pipeline."
 function parampipeline(;
-                    i1::Union{AbstractString, Void}=nothing,
-                    d1::Union{AbstractString, Void}=nothing,
-                    i2::Union{AbstractString, Void}=nothing,
-                    d2::Union{AbstractString, Void}=nothing,
+                    i1::Union{AbstractString, Nothing}=nothing,
+                    d1::Union{AbstractString, Nothing}=nothing,
+                    i2::Union{AbstractString, Nothing}=nothing,
+                    d2::Union{AbstractString, Nothing}=nothing,
                     out_dir::AbstractString=defaults["out_dir_param"],
                     n_strucs::Integer=defaults["n_strucs_param"],
                     other_ratio::Real=defaults["other_ratio"],

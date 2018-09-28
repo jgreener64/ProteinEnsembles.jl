@@ -98,9 +98,9 @@ function readpdb(in_filepath::AbstractString; hetatm::Bool=false)
                 # Residue number integer is columns 23-26 converted to an integer
                 res_n = parse(Int, line[23:26])
                 # x, y and z coordinates are columns 31-38, 39-46 and 47-54 respectively converted to floats
-                x = float(line[31:38])
-                y = float(line[39:46])
-                z = float(line[47:54])
+                x = parse(Float64, line[31:38])
+                y = parse(Float64, line[39:46])
+                z = parse(Float64, line[47:54])
                 # Element is determined from atom name, not from columns 77-78
                 element = inferelement(atom_name)
                 # Remove disorder
@@ -139,7 +139,8 @@ function spaceatomname(atom_name::AbstractString, element::AbstractString)
     chars = length(atom_name)
     @assert chars <= 4 "Atom name is greater than four characters"
     if element != "-"
-        cent_ind = findfirst(atom_name, element[1])
+        fi = findfirst(x -> x == element[1], atom_name)
+        cent_ind = fi == nothing ? 0 : fi
     else
         cent_ind = 1
     end
@@ -366,9 +367,9 @@ function readpocketpoints(pdb_filepath::AbstractString)
         for line in eachline(pdb_file)
             if startswith(line, "ATOM  ") || startswith(line, "HETATM")
                 counter += 1
-                x = float(line[31:38])
-                y = float(line[39:46])
-                z = float(line[47:54])
+                x = parse(Float64, line[31:38])
+                y = parse(Float64, line[39:46])
+                z = parse(Float64, line[47:54])
                 pocket_n = parse(Int, line[23:26])
                 if haskey(pock_points, pocket_n)
                     pock_points[pocket_n] = hcat(pock_points[pocket_n], [x, y, z])
@@ -399,9 +400,9 @@ function readligsite(pdb_filepath::AbstractString)
         for line in eachline(pdb_file)
             if startswith(line, "ATOM  ") || startswith(line, "HETATM")
                 counter += 1
-                x = float(line[31:38])
-                y = float(line[39:46])
-                z = float(line[47:54])
+                x = parse(Float64, line[31:38])
+                y = parse(Float64, line[39:46])
+                z = parse(Float64, line[47:54])
                 vol = parse(Int, line[23:26])
                 push!(xs, x)
                 push!(ys, y)

@@ -20,7 +20,7 @@ function tmscore(model::AbstractString,
     # This is easier using grep and sed but they are system-specific
     reg_match = match(r"\nTM-score    = \d\.\d\d\d\d", tmscore_output)
     @assert reg_match != nothing "TMscore failed or the result could not be read"
-    return float(reg_match.match[16:end])
+    return parse(Float64, reg_match.match[16:end])
 end
 
 

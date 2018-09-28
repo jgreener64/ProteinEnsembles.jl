@@ -26,14 +26,14 @@ function kabschalignment(coords_one::Array{Float64}, coords_two::Array{Float64})
     @assert n_coords == size(coords_two, 2) "Number of coordinates is different"
     @assert n_coords > 0 "The coordinate arrays are empty"
     # Find the translation to move the coordinate centroids to the origin
-    trans_one = sum(coords_one, 2) / n_coords
-    trans_two = sum(coords_two, 2) / n_coords
+    trans_one = sum(coords_one, dims=2) / n_coords
+    trans_two = sum(coords_two, dims=2) / n_coords
     p = coords_one - repeat(trans_one, inner=[1,n_coords])
     q = coords_two - repeat(trans_two, inner=[1,n_coords])
     # Find the rotation that maps the coordinates
     cov = p * transpose(q)
-    svd = svdfact(cov)
-    rotation = svd[:V] * transpose(svd[:U])
+    svd_res = svd(cov)
+    rotation = svd_res.V * transpose(svd_res.U)
     return trans_one, trans_two, rotation
 end
 
@@ -45,7 +45,7 @@ function displacements(coords_one::Array{Float64}, coords_two::Array{Float64})
     @assert n_coords > 0 "The coordinate arrays are empty"
     diff = coords_one - coords_two
     sq_diff = diff .* diff
-    dists = sqrt.(sum(sq_diff, 1))
+    dists = sqrt.(sum(sq_diff, dims=1))
     return dists[:]
 end
 

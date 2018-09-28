@@ -152,9 +152,9 @@ function clusterligsite(point_filepath::AbstractString,
     n_points = length(point_lines)
     point_coords = zeros(3, n_points)
     for (i, line) in enumerate(point_lines)
-        point_coords[1,i] = float(line[31:38])
-        point_coords[2,i] = float(line[39:46])
-        point_coords[3,i] = float(line[47:54])
+        point_coords[1,i] = parse(Float64, line[31:38])
+        point_coords[2,i] = parse(Float64, line[39:46])
+        point_coords[3,i] = parse(Float64, line[47:54])
     end
     println("Read ", n_points, " pocket points from LIGSITEcs pocket points PDB file")
     centre_coords, centre_vols = readligsite(centre_filepath)

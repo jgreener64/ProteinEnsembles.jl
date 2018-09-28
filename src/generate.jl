@@ -145,7 +145,7 @@ function fixchirality!(coords::Array{Float64}, atoms::Array{Atom,1})
                 end
             end
             if found_co && found_n && found_cb
-                if dot(vec_oc, Base.cross(vec_rc, vec_nc)) > 0
+                if dot(vec_oc, LinearAlgebra.cross(vec_rc, vec_nc)) > 0
                     count_d += 1
                 else
                     count_l += 1
