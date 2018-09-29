@@ -165,8 +165,8 @@ function runpipeline(;
     println("Arguments:")
     println("  i1               - ", i1)
     println("  d1               - ", d1)
-    println("  i2               - ", i2)
-    println("  d2               - ", d2)
+    println("  i2               - ", i2 == nothing ? "nothing" : i2)
+    println("  d2               - ", d2 == nothing ? "nothing" : d2)
     println("  out_dir          - ", out_dir)
     println("  n_strucs         - ", n_strucs)
     println("  tolerance_weight - ", tolerance_weight)
@@ -176,7 +176,7 @@ function runpipeline(;
     else
         println("  extra_pdbs       - nothing")
     end
-    println("  mod_path         - ", mod_path)
+    println("  mod_path         - ", mod_path == nothing ? "nothing" : mod_path)
     println("  n_mods           - ", n_mods)
     println()
 

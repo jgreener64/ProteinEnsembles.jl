@@ -8,6 +8,7 @@ export
 
 using Gadfly
 using Colors
+import Cairo
 
 
 "Dictionary of default colours for plotting."
