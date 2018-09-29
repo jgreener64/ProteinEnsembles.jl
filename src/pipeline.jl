@@ -413,7 +413,7 @@ function parampipeline(;
         constraints_com, constraints_one, constraints_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, tolerance_weight=tw)
         ensemble_com = generateensemble(constraints_com, n_strucs)
         selfalignensemble!(ensemble_com)
-        lab = replace(string(tw), ".", "_") # Replace dots with underscores for directory name
+        lab = replace(string(tw), "."=> "_") # Replace dots with underscores for directory name
         if !isdir("$out_dir/tw_$lab")
             mkdir("$out_dir/tw_$lab")
             mkdir("$out_dir/tw_$lab/pdbs")

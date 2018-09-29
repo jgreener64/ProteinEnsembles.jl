@@ -11,7 +11,7 @@ Greener JG, Filippis I and Sternberg MJE, Predicting protein dynamics and allost
 
 ## Summary
 
-Install using `Pkg.add("ProteinEnsembles")` from within Julia. Run using
+Install using `add ProteinEnsembles` from within the Julia package mode. Run using
 
 ```bash
 exprose --i1 input_1.pdb --d1 input_1.dssp \
@@ -24,7 +24,7 @@ where `exprose` is in the `bin` directory.
 
 ## Installation
 
-Julia is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running `Pkg.add("ProteinEnsembles")` from the Julia REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `Pkg.test("ProteinEnsembles")`. If you wish to use the auto-parameterisation procedure (see below) you must also have [TM-score](https://zhanglab.ccmb.med.umich.edu/TM-score) installed.
+Julia is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running `add ProteinEnsembles` from the Julia package REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `test ProteinEnsembles`. If you wish to use the auto-parameterisation procedure (see below) you must also have [TM-score](https://zhanglab.ccmb.med.umich.edu/TM-score) installed.
 
 
 ## Requirements
