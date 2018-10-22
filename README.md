@@ -19,12 +19,12 @@ exprose --i1 input_1.pdb --d1 input_1.dssp \
     -n 50 -o exprose_out
 ```
 
-where `exprose` is in the `bin` directory.
+where `exprose` is in the `bin` directory of the package.
 
 
 ## Installation
 
-Julia is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running `add ProteinEnsembles` from the Julia package REPL. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `test ProteinEnsembles`. If you wish to use the auto-parameterisation procedure (see below) you must also have [TM-score](https://zhanglab.ccmb.med.umich.edu/TM-score) installed.
+Julia is required and can be downloaded [here](http://julialang.org/downloads). Install ProteinEnsembles.jl by running `add ProteinEnsembles` from the Julia package REPL, which is entered by pressing `]`. This will also automatically install a few other required Julia packages. If you want, the tests can be run using `test ProteinEnsembles`. If you wish to use the auto-parameterisation procedure (see below) you must also have [TM-score](https://zhanglab.ccmb.med.umich.edu/TM-score) installed.
 
 
 ## Requirements
@@ -41,13 +41,13 @@ These instructions are tailored towards Mac/Unix. However they could be modified
 Although organised as a Julia package, ProteinEnsembles.jl is primarily designed for use from the command line. The `exprose` script in the `bin` directory implements this. For example, to see the command line options run
 
 ```bash
-~/.julia/v0.6/ProteinEnsembles/bin/exprose -h
+~/.julia/packages/ProteinEnsembles/xxxxx/bin/exprose -h
 ```
 
-For easy access to the `exprose` command you might like to add the following line to your profile:
+where `xxxxx` is the directory of the latest package version. For easy access to the `exprose` command you might like to add the following line to your profile:
 
 ```bash
-export PATH=$PATH:~/.julia/v0.6/ProteinEnsembles/bin
+export PATH=$PATH:~/.julia/packages/ProteinEnsembles/xxxxx/bin
 ```
 
 Then, if all input files are in your current directory, run the program as follows:
@@ -147,7 +147,7 @@ The results from the paper can be generated using the instructions in `paper_res
 
 ### Performance
 
-ExProSE can generate 250 structures in ~20 minutes for T4-lysozyme (162 residues) on a 3.1 GHz Intel Core i7 processor. ExProSE cannot currently run on multiple cores but this may be implemented in future.
+ExProSE can generate 250 structures in ~20 minutes for T4-lysozyme (162 residues) on a 3.1 GHz Intel Core i7 processor.
 
 
 ## Reporting issues
