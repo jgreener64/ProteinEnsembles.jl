@@ -98,9 +98,9 @@ function readpdb(in_filepath::AbstractString; hetatm::Bool=false)
                 # Residue number integer is columns 23-26 converted to an integer
                 res_n = parse(Int, line[23:26])
                 # x, y and z coordinates are columns 31-38, 39-46 and 47-54 respectively converted to floats
-                x = float(line[31:38])
-                y = float(line[39:46])
-                z = float(line[47:54])
+                x = parse(Float64, line[31:38])
+                y = parse(Float64, line[39:46])
+                z = parse(Float64, line[47:54])
                 # Element is determined from atom name, not from columns 77-78
                 element = inferelement(atom_name)
                 # Remove disorder
@@ -139,7 +139,8 @@ function spaceatomname(atom_name::AbstractString, element::AbstractString)
     chars = length(atom_name)
     @assert chars <= 4 "Atom name is greater than four characters"
     if element != "-"
-        cent_ind = findfirst(atom_name, element[1])
+        fi = findfirst(x -> x == element[1], atom_name)
+        cent_ind = fi == nothing ? 0 : fi
     else
         cent_ind = 1
     end
@@ -239,7 +240,7 @@ function writeensemblescores(out_filepath::AbstractString, ensemble::ModelledEns
     @assert length(strucs) > 0 "The ensemble does not contain any structures"
     open(expanded_path, "w") do out_file
         for struc in strucs
-            println(out_file, round(struc.score, 1))
+            println(out_file, round(struc.score, digits=1))
         end
     end
     println("Wrote ensemble scores to file \"$expanded_path\"")
@@ -285,8 +286,8 @@ function writepcview(out_filepath::AbstractString,
         println(out_file, "set dash_color, ", line_colour)
         for (i, j) in enumerate(inds_to_use)
             pc_coords = atoms[j].coords + disps[3i-2:3i] * weighting
-            println(out_file, "pseudoatom pt", 2i-1, ", pos=[", round(atoms[j].coords[1], 2), ", ", round(atoms[j].coords[2], 2), ", ", round(atoms[j].coords[3], 2), "]")
-            println(out_file, "pseudoatom pt", 2i, ", pos=[", round(pc_coords[1], 2), ", ", round(pc_coords[2], 2), ", ", round(pc_coords[3], 2), "]")
+            println(out_file, "pseudoatom pt", 2i-1, ", pos=[", round(atoms[j].coords[1], digits=2), ", ", round(atoms[j].coords[2], digits=2), ", ", round(atoms[j].coords[3], digits=2), "]")
+            println(out_file, "pseudoatom pt", 2i, ", pos=[", round(pc_coords[1], digits=2), ", ", round(pc_coords[2], digits=2), ", ", round(pc_coords[3], digits=2), "]")
             println(out_file, "distance dist", i, ", /pt", 2i-1, ", /pt", 2i)
         end
         println(out_file, "hide everything, pt*")
@@ -334,14 +335,14 @@ function writefloatarray(out_filepath::AbstractString, vals::Array{Float64,1}; d
     checkfilepath(expanded_path)
     open(expanded_path, "w") do out_file
         for val in vals
-            println(out_file, round(val, dec_places))
+            println(out_file, round(val, digits=dec_places))
         end
     end
 end
 
 
 "Write an array of strings to an output file."
-function writestringarray{T <: AbstractString}(out_filepath::AbstractString, vals::Array{T,1})
+function writestringarray(out_filepath::AbstractString, vals::Array{<:AbstractString,1})
     expanded_path = expanduser(out_filepath)
     checkfilepath(expanded_path)
     open(expanded_path, "w") do out_file
@@ -366,9 +367,9 @@ function readpocketpoints(pdb_filepath::AbstractString)
         for line in eachline(pdb_file)
             if startswith(line, "ATOM  ") || startswith(line, "HETATM")
                 counter += 1
-                x = float(line[31:38])
-                y = float(line[39:46])
-                z = float(line[47:54])
+                x = parse(Float64, line[31:38])
+                y = parse(Float64, line[39:46])
+                z = parse(Float64, line[47:54])
                 pocket_n = parse(Int, line[23:26])
                 if haskey(pock_points, pocket_n)
                     pock_points[pocket_n] = hcat(pock_points[pocket_n], [x, y, z])
@@ -399,9 +400,9 @@ function readligsite(pdb_filepath::AbstractString)
         for line in eachline(pdb_file)
             if startswith(line, "ATOM  ") || startswith(line, "HETATM")
                 counter += 1
-                x = float(line[31:38])
-                y = float(line[39:46])
-                z = float(line[47:54])
+                x = parse(Float64, line[31:38])
+                y = parse(Float64, line[39:46])
+                z = parse(Float64, line[47:54])
                 vol = parse(Int, line[23:26])
                 push!(xs, x)
                 push!(ys, y)
@@ -433,8 +434,8 @@ end
 
 
 "Write output file with assignment in residue number column"
-function writeclusterpoints{T <: AbstractString}(out_filepath::AbstractString,
-                    point_lines::Array{T,1},
+function writeclusterpoints(out_filepath::AbstractString,
+                    point_lines::Array{<:AbstractString,1},
                     assignments::Array{Int,1})
     expanded_path = expanduser(out_filepath)
     checkfilepath(expanded_path)

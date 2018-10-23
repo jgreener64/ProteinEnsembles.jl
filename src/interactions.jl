@@ -549,7 +549,7 @@ function findinteractions(atoms::Array{Atom,1},
         end
     end
     println("Found interactions:")
-    max_length = maximum(map(length, inter_types))
+    max_length = maximum(length.(inter_types))
     for (k, inter_type) in enumerate(inter_types)
         println("  ", rpad(inter_type, max_length), " - ", inter_counter[k])
     end
@@ -601,9 +601,9 @@ function Constraints(atoms::Array{Atom,1},
                         "\t",
                         atomid(atoms[j]),
                         "\t",
-                        round(constraint_lower, 3),
+                        round(constraint_lower, digits=3),
                         "\t",
-                        round(constraint_upper, 3)
+                        round(constraint_upper, digits=3)
                     )
                     constraint_lower = constraint_upper
                 end
@@ -665,9 +665,9 @@ function Constraints(atoms::Array{Atom,1},
                         "\t",
                         atomid(atoms[j]),
                         "\t",
-                        round(constraint_lower, 3),
+                        round(constraint_lower, digits=3),
                         "\t",
-                        round(constraint_upper, 3)
+                        round(constraint_upper, digits=3)
                     )
                     constraint_lower = constraint_upper
                 end

@@ -16,18 +16,18 @@ function tmscore(model::AbstractString,
                     command::AbstractString=defaults["tmscore_path"])
     @assert isfile(model) "Model filepath not valid: \"$model\""
     @assert isfile(reference) "Reference filepath not valid: \"$reference\""
-    tmscore_output = readstring(pipeline(`TMscore $model $reference`))
+    tmscore_output = read(pipeline(`TMscore $model $reference`), String)
     # This is easier using grep and sed but they are system-specific
     reg_match = match(r"\nTM-score    = \d\.\d\d\d\d", tmscore_output)
     @assert reg_match != nothing "TMscore failed or the result could not be read"
-    return float(reg_match.match[16:end])
+    return parse(Float64, reg_match.match[16:end])
 end
 
 
 "Check a command runs TMscore."
 function tmscorepathvalid(command::AbstractString)
     try
-        readstring(pipeline(`$command`))
+        read(pipeline(`$command`), String)
     catch
         return false
     end

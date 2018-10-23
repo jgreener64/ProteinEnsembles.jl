@@ -21,17 +21,17 @@ Determines the element of an atom from the atom name.
 Returns the element as a string.
 """
 function inferelement(atom_name::AbstractString)
-    if contains(atom_name, "C")
+    if occursin("C", atom_name)
         element = "C"
-    elseif contains(atom_name, "N")
+    elseif occursin("N", atom_name)
         element = "N"
-    elseif contains(atom_name, "O")
+    elseif occursin("O", atom_name)
         element = "O"
-    elseif contains(atom_name, "S")
+    elseif occursin("S", atom_name)
         element = "S"
-    elseif contains(atom_name, "H")
+    elseif occursin("H", atom_name)
         element = "H"
-    elseif contains(atom_name, "P")
+    elseif occursin("P", atom_name)
         element = "P"
     else
         println("Could not find element for atom with name ", atom_name)

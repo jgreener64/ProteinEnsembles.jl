@@ -116,7 +116,7 @@ Use pocket points to generate additional constraints.
 function perturbensemble(atoms::Array{Atom,1},
                     constraints::Constraints,
                     n_strucs::Integer,
-                    mod_path::Union{AbstractString, Void},
+                    mod_path::Union{AbstractString, Nothing},
                     n_mods::Integer)
     ensemble_mods = ModelledEnsemble[]
     if n_mods > 0 && mod_path != nothing
@@ -152,9 +152,9 @@ function clusterligsite(point_filepath::AbstractString,
     n_points = length(point_lines)
     point_coords = zeros(3, n_points)
     for (i, line) in enumerate(point_lines)
-        point_coords[1,i] = float(line[31:38])
-        point_coords[2,i] = float(line[39:46])
-        point_coords[3,i] = float(line[47:54])
+        point_coords[1,i] = parse(Float64, line[31:38])
+        point_coords[2,i] = parse(Float64, line[39:46])
+        point_coords[3,i] = parse(Float64, line[47:54])
     end
     println("Read ", n_points, " pocket points from LIGSITEcs pocket points PDB file")
     centre_coords, centre_vols = readligsite(centre_filepath)
@@ -179,7 +179,7 @@ function clusterligsite(point_filepath::AbstractString,
     n_unassigned = 2 # Placeholder
     new_n_unassigned = 1 # Placeholder
     while new_n_unassigned != n_unassigned && new_n_unassigned > 0
-        n_unassigned = sum(map(x -> x == 0, assignments))
+        n_unassigned = sum(x -> x == 0, assignments)
         for p in 1:n_points
             # For each unassigned point
             if assignments[p] == 0
@@ -201,7 +201,7 @@ function clusterligsite(point_filepath::AbstractString,
                 end
             end
         end
-        new_n_unassigned = sum(map(x -> x == 0, assignments))
+        new_n_unassigned = sum(x -> x == 0, assignments)
     end
     if new_n_unassigned > 0
         println("Could not assign ", new_n_unassigned, " points")

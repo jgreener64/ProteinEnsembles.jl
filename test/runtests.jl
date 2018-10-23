@@ -1,5 +1,5 @@
 using ProteinEnsembles
-using Base.Test
+using Test
 
 
 testfile(path::AbstractString...) = joinpath(dirname(@__FILE__), "test_files", path...)
@@ -11,7 +11,7 @@ testfile(path::AbstractString...) = joinpath(dirname(@__FILE__), "test_files", p
 linux_only_param_test = true
 
 
-if !linux_only_param_test || is_linux()
+if !linux_only_param_test || Sys.islinux()
     # Optional argument is path to TMscore executable
     if isempty(ARGS)
         test_tmscore_path = "TMscore"

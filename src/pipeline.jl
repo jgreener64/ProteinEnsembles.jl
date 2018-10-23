@@ -144,17 +144,17 @@ end
 
 
 "Wrapper function to run the whole pipeline."
-function runpipeline{T <: AbstractString}(;
-                    i1::Union{AbstractString, Void}=nothing,
-                    d1::Union{AbstractString, Void}=nothing,
-                    i2::Union{AbstractString, Void}=nothing,
-                    d2::Union{AbstractString, Void}=nothing,
+function runpipeline(;
+                    i1::Union{AbstractString, Nothing}=nothing,
+                    d1::Union{AbstractString, Nothing}=nothing,
+                    i2::Union{AbstractString, Nothing}=nothing,
+                    d2::Union{AbstractString, Nothing}=nothing,
                     out_dir::AbstractString=defaults["out_dir"],
                     n_strucs::Integer=defaults["n_strucs"],
                     tolerance_weight::Real=defaults["tolerance_weight"],
                     other_ratio::Real=defaults["other_ratio"],
-                    extra_pdbs::Array{T,1}=String[],
-                    mod_path::Union{AbstractString, Void}=nothing,
+                    extra_pdbs::Array{<:AbstractString,1}=String[],
+                    mod_path::Union{AbstractString, Nothing}=nothing,
                     n_mods::Integer=0)
     @assert i1 != nothing && d1 != nothing "Arguments i1 and d1 required"
 
@@ -165,8 +165,8 @@ function runpipeline{T <: AbstractString}(;
     println("Arguments:")
     println("  i1               - ", i1)
     println("  d1               - ", d1)
-    println("  i2               - ", i2)
-    println("  d2               - ", d2)
+    println("  i2               - ", i2 == nothing ? "nothing" : i2)
+    println("  d2               - ", d2 == nothing ? "nothing" : d2)
     println("  out_dir          - ", out_dir)
     println("  n_strucs         - ", n_strucs)
     println("  tolerance_weight - ", tolerance_weight)
@@ -176,7 +176,7 @@ function runpipeline{T <: AbstractString}(;
     else
         println("  extra_pdbs       - nothing")
     end
-    println("  mod_path         - ", mod_path)
+    println("  mod_path         - ", mod_path == nothing ? "nothing" : mod_path)
     println("  n_mods           - ", n_mods)
     println()
 
@@ -223,11 +223,10 @@ end
 
 
 "Run the analysis pipeline and write output files."
-function runanalysis{T <: AbstractString}(
-                    out_dir::AbstractString,
+function runanalysis(out_dir::AbstractString,
                     ensemble::ModelledEnsemble,
                     constraints::Constraints;
-                    extra_pdbs::Array{T,1}=String[],
+                    extra_pdbs::Array{<:AbstractString,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
                     out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
@@ -292,12 +291,11 @@ function runanalysis{T <: AbstractString}(
 end
 
 
-function runanalysis{T <: AbstractString}(
-                    out_dir::AbstractString,
+function runanalysis(out_dir::AbstractString,
                     ensemble_com::ModelledEnsemble,
                     constraints_one::Constraints,
                     constraints_two::Constraints;
-                    extra_pdbs::Array{T,1}=String[],
+                    extra_pdbs::Array{<:AbstractString,1}=String[],
                     ensemble_mods::Array{ModelledEnsemble,1}=ModelledEnsemble[],
                     out_prefix::AbstractString=defaults["out_prefix"])
     # Align ensemble
@@ -371,10 +369,10 @@ end
 
 "Run the auto-parameterisation pipeline."
 function parampipeline(;
-                    i1::Union{AbstractString, Void}=nothing,
-                    d1::Union{AbstractString, Void}=nothing,
-                    i2::Union{AbstractString, Void}=nothing,
-                    d2::Union{AbstractString, Void}=nothing,
+                    i1::Union{AbstractString, Nothing}=nothing,
+                    d1::Union{AbstractString, Nothing}=nothing,
+                    i2::Union{AbstractString, Nothing}=nothing,
+                    d2::Union{AbstractString, Nothing}=nothing,
                     out_dir::AbstractString=defaults["out_dir_param"],
                     n_strucs::Integer=defaults["n_strucs_param"],
                     other_ratio::Real=defaults["other_ratio"],
@@ -415,7 +413,7 @@ function parampipeline(;
         constraints_com, constraints_one, constraints_two = interactions(i1, d1, i2, d2, other_ratio=other_ratio, tolerance_weight=tw)
         ensemble_com = generateensemble(constraints_com, n_strucs)
         selfalignensemble!(ensemble_com)
-        lab = replace(string(tw), ".", "_") # Replace dots with underscores for directory name
+        lab = replace(string(tw), "."=> "_") # Replace dots with underscores for directory name
         if !isdir("$out_dir/tw_$lab")
             mkdir("$out_dir/tw_$lab")
             mkdir("$out_dir/tw_$lab/pdbs")

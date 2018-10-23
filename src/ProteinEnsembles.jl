@@ -2,6 +2,11 @@ __precompile__()
 
 module ProteinEnsembles
 
+using LinearAlgebra: norm, dot, svd, eigen
+import LinearAlgebra # To use cross without conflicting with Gadfly
+using Statistics: var, median
+using Random: rand!
+
 include("types.jl")
 include("defaults.jl")
 include("bonds.jl")
