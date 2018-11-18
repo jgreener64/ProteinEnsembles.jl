@@ -100,4 +100,4 @@ end
 else
     println("Parameterisation tests not run; to run these, set run_param_test ",
             "to true in runtests.jl")
-end # Linux test
+end
