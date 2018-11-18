@@ -12,12 +12,6 @@ matrix:
     - julia: nightly
 notifications:
   email: false
-before_install:
-  - if [ `uname` = "Linux" ]; then
-      curl https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore.gz | gunzip > TMscore;
-      chmod +x TMscore;
-      export PATH=$PATH:$(pwd);
-    fi
 # uncomment the following lines to override the default test script
 #script:
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi

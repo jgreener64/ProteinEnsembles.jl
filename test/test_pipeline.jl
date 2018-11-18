@@ -75,7 +75,7 @@ n_mods = 1
 end
 
 
-if !linux_only_param_test || Sys.islinux()
+if run_param_test
 
 @testset "Parameterisation" begin
     # Auto-parameterisation pipeline
@@ -98,7 +98,6 @@ if !linux_only_param_test || Sys.islinux()
 end
 
 else
-    println("Parameterisation tests not run as OS is not Linux")
-    println("This is due to only installing TMscore on Linux for the auto-build")
-    println("To run the parameterisation tests, set linux_only_param_test to false in runtests.jl")
+    println("Parameterisation tests not run; to run these, set run_param_test ",
+            "to true in runtests.jl")
 end # Linux test

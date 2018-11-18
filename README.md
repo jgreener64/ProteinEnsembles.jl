@@ -158,6 +158,6 @@ If you find any bugs in the software or have a comment or feature request, pleas
 ## Notes
 
 - All default values for parameters used in the code can be found and modified in `src/defaults.jl`.
-- Auto-parameterisation works fine on all OSs but the auto-parameterisation tests are disabled by default on non-Linux systems to make the CI build pass. If you want to run the parameterisation tests on a non-Linux OS, set `linux_only_param_test` in `test/runtests.jl` to `false`.
+- Auto-parameterisation works fine on all OSs but the auto-parameterisation tests are disabled by default to make the CI build pass. If you want to run the parameterisation tests, set `run_param_test` in `test/runtests.jl` to `true`.
 - Julia utilities to deal with protein structures and PDB files can be found in [Bio.jl](http://biojulia.github.io/Bio.jl/) and [MIToS.jl](http://diegozea.github.io/MIToS.jl/).
 - ExProSE users might also like to try [tCONCOORD](http://wwwuser.gwdg.de/~dseelig/tconcoord.html) and [NMSim](http://cpclab.uni-duesseldorf.de/nmsim/).

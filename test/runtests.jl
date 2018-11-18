@@ -5,13 +5,13 @@ using Test
 testfile(path::AbstractString...) = joinpath(dirname(@__FILE__), "test_files", path...)
 
 
-# Whether to run the parameterisation tests on Linux OSs only
+# Whether to run the parameterisation tests
 # This is to satisfy the online auto-builds
-# Set to false locally to run the tests on all OSs
-linux_only_param_test = true
+# Set to true locally to run the tests
+run_param_test = false
 
 
-if !linux_only_param_test || Sys.islinux()
+if run_param_test
     # Optional argument is path to TMscore executable
     if isempty(ARGS)
         test_tmscore_path = "TMscore"
