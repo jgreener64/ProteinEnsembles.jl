@@ -108,7 +108,7 @@ runs the auto-parameterisation procedure with the `-t` option specifying the com
 
 ### Allosteric site prediction
 
-To predict allosteric sites you should run [LIGSITEcs](http://projects.biotec.tu-dresden.de/pocket/download.html) on the *second* input structure (the one you give as `--i2`). You then need to run the `cluster-ligsite` script in `bin` to assign the points to pockets:
+To predict allosteric sites you should run [LIGSITEcs](https://bmcstructbiol.biomedcentral.com/articles/10.1186/1472-6807-6-19) on the *second* input structure (the one you give as `--i2`). You then need to run the `cluster-ligsite` script in `bin` to assign the points to pockets:
 
 ```bash
 cluster-ligsite pocket_r.pdb pocket_all.pdb pocket_points.pdb
@@ -157,6 +157,7 @@ If you find any bugs in the software or have a comment or feature request, pleas
 
 ## Notes
 
+- At some point the download link to LIGSITEcs seems to have died. You may need to contact the authors to get the software.
 - All default values for parameters used in the code can be found and modified in `src/defaults.jl`.
 - Auto-parameterisation works fine on all OSs but the auto-parameterisation tests are disabled by default to make the CI build pass. If you want to run the parameterisation tests, set `run_param_test` in `test/runtests.jl` to `true`.
 - Julia utilities to deal with protein structures and PDB files can be found in [Bio.jl](http://biojulia.github.io/Bio.jl/) and [MIToS.jl](http://diegozea.github.io/MIToS.jl/).
