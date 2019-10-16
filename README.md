@@ -8,6 +8,8 @@ This [Julia](http://julialang.org/) package implements the ExProSE algorithm tha
 
 Greener JG, Filippis I and Sternberg MJE, Predicting protein dynamics and allostery using multi-protein atomic distance constraints, *Structure*, 2017, 25, 546-558. [Link to paper](http://www.cell.com/structure/fulltext/S0969-2126(17)30008-4).
 
+The package also has some functions that may be of general use for structural bioinformatics including superimposition, RMSD, PCA, interaction finding in structures and distance geometry.
+
 
 ## Summary
 
