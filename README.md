@@ -92,6 +92,7 @@ constraints_com, constraints_one, constraints_two = interactions(
     "input_2.dssp"
 )
 ensemble_com = generateensemble(constraints_com, 50)
+makedirectories("exprose_out", ["pdbs", "pymol", "pcs"])
 runanalysis("exprose_out", ensemble_com, constraints_one, constraints_two)
 ```
 

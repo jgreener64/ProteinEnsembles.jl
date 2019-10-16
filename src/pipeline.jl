@@ -5,6 +5,7 @@ export
     runfromshell,
     paramfromshell,
     runpipeline,
+    makedirectories,
     runanalysis,
     parampipeline
 
