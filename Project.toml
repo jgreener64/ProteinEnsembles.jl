@@ -15,10 +15,10 @@ ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 
 [compat]
 julia = "1"
-ArgParse = "0.6"
-Cairo = "0.7, 0.8"
-Colors = "0.9"
-Gadfly = "1.1"
+ArgParse = "0.6, 1"
+Cairo = "0.7, 0.8, 1"
+Colors = "0.9, 0.10, 0.11, 0.12"
+Gadfly = "1"
 ProgressMeter = "1"
 
 [extras]
